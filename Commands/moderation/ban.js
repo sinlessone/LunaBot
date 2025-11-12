@@ -1,6 +1,7 @@
 const {SlashCommandBuilder, EmbedBuilder, resolveColor, MessageFlags} = require('discord.js')
 const {IsBanned} = require("../../utils/IsBanned");
 const config = require('../../config.json')
+const {dmUser} = require("../../utils/dmUser");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -96,13 +97,20 @@ module.exports = {
             }
 
             try {
+                let success;
+                try {
+                    success = await dmUser(interaction, member, `You have been banned with reason: ${reason}`)
+                } catch (e) {}
+
                 await interaction.guild.members.ban(user.id, {
                     deleteMessageSeconds: duration,
                     reason: `${reason} - by <@${interaction.user.id}>`
                 });
-
+                console.log(success)
                 await interaction.reply({
-                    embeds: [embed.setColor(resolveColor("Green")).setTitle("SUCCESS").setDescription(`Banned user <@${user.id}> (${user.id})`)]
+                    embeds: [embed.setColor(resolveColor("Green")).setTitle("SUCCESS").setDescription(`Banned user <@${user.id}> (${user.id})`).addFields({
+                        name: "Direct messaged?", value: success ? "✅" : "❌"
+                    })]
                 });
             } catch (error) {
                 await interaction.reply({
