@@ -22,9 +22,9 @@ module.exports = {
         }
 
         await execute(db, "UPDATE serverconfig SET ai_channel_id=? WHERE server_id=?", [channel.id, serverid])
-        const [{ai_channel_id} ] = await queryall(db, "SELECT * FROM serverconfig")
+        const data = await queryall(db, "SELECT * FROM serverconfig")
+        const ai_channel_id = data.map(item => item["ai_channel_id"])
         setAiIds(ai_channel_id)
-
         interaction.reply("Changed the AI bot channel!")
     }
 }
