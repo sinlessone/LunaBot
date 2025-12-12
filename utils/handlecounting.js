@@ -4,6 +4,7 @@ module.exports = {
     async handlecounting(message) {
         let msg = message.content.toString().split(" ")
         if (/\D/.test(msg[0])) return
+        msg = msg.toLocaleLowerCase()
         let {current_number: lastnumber, last_counter: lastcounter} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [message.guild.id])
         if (!lastnumber) {
             lastnumber = 0
