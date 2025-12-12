@@ -1,9 +1,12 @@
 const {queryone, db, execute} = require("./db");
 const {presets} = require("../data/embed");
+const parseAnyNumber = require("./toArabicNum");
 module.exports = {
     async handlecounting(message) {
-        let msg = message.content.toString()
-        msg = msg.toLocaleLowerCase().split(" ")
+        let msg = message.content.toString().toLowerCase().split(" ")
+        msg[0] = msg[0].replaceAll("sex", "6") // funny suggested by drip
+        msg[0] = parseAnyNumber(msg[0])
+        console.log(msg[0])
         if (/\D/.test(msg[0])) return
         let {current_number: lastnumber, last_counter: lastcounter} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [message.guild.id])
         if (!lastnumber) {
