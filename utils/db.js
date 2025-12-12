@@ -86,14 +86,6 @@ const db = new sqlite3.Database(dbpath);
         last_counter TEXT
         )
         `);
-        try {
-            await execute(db, `
-                ALTER TABLE serverconfig ADD COLUMN counting_channel_id TEXT;
-                ALTER TABLE serverconfig ADD COLUMN current_number TEXT
-                ALTER TABLE serverconfig ADD COLUMN last_counter TEXT;
-                `)
-        } catch (e) {
-        }
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         id TEXT PRIMARY KEY,
         question TEXT NOT NULL,
