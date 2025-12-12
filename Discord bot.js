@@ -52,7 +52,6 @@
         }
 
         if (getCountIds().includes(message.channel.id)) {
-            console.log("this was sent in a counting channel")
             return await handlecounting(message)
         }
     })

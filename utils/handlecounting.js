@@ -5,7 +5,6 @@ module.exports = {
         let msg = message.content.toString().split(" ")
         if (/\D/.test(msg[0])) return
         let {current_number: lastnumber, last_counter: lastcounter} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [message.guild.id])
-        console.log(lastnumber)
         if (!lastnumber) {
             lastnumber = 0
         }
@@ -26,15 +25,22 @@ module.exports = {
             await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=? WHERE server_id=?", [Number(lastnumber) + 1, message.member.id, message.guild.id])
             return message.react("✅")
         } else {
+            if (Number(lastnumber) === 0) {
+                await message.react("❌")
+                return await message.reply({
+                    embeds: [presets.warning("", "the current number is 1, please start over again")]
+                }).then(newmessage => {
+                    setTimeout(async () => {
+                        await newmessage.delete()
+                    }, 3000)
+                })
+
+            }
             await message.react("❌")
             await message.reply({
-                embeds: [presets.warning("", `Incorrect, the current number is ${Number(lastnumber) + 1}`)]
-            }).then(newmessage => {
-                setTimeout(async () => {
-                    await newmessage.delete()
-                    await message.delete()
-                }, 3000 )
+                embeds: [presets.warning("FAIL", `<@${message.member.id}> messed up the count, the correct number was ${Number(lastnumber) + 1}`)]
             })
+            await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=? WHERE server_id=?", [0, 0, message.guild.id])
 
         }
 
