@@ -80,9 +80,20 @@ const db = new sqlite3.Database(dbpath);
         deniedChannelId TEXT,
         acceptedChannelId TEXT,
         autothread TEXT,
-        ai_channel_id TEXT        
+        ai_channel_id TEXT,
+        counting_channel_id TEXT,
+        current_number TEXT,
+        last_counter TEXT
         )
         `);
+        try {
+            await execute(db, `
+                ALTER TABLE serverconfig ADD COLUMN counting_channel_id TEXT;
+                ALTER TABLE serverconfig ADD COLUMN current_number TEXT
+                ALTER TABLE serverconfig ADD COLUMN last_counter TEXT;
+                `)
+        } catch (e) {
+        }
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         id TEXT PRIMARY KEY,
         question TEXT NOT NULL,
@@ -135,4 +146,7 @@ const db = new sqlite3.Database(dbpath);
         async function getsuggestchannels() {
         return await queryall(db, "SELECT * FROM serverconfig");
         }
-module.exports = { execute, queryall, queryone, initDb, exists, registerserver, serverindb, getaichannels, getsuggestchannels, db}
+        async function getcountingchannels() {
+        return await queryall(db, "SELECT counting_channel_id FROM serverconfig");
+        }
+module.exports = { execute, queryall, queryone, initDb, exists, registerserver, serverindb, getaichannels, getsuggestchannels, getcountingchannels, db}

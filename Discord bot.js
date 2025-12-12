@@ -18,6 +18,8 @@
     const {handleSuggestions} = require("./utils/handleSuggestions");
     const {inviteTrackerHandler} = require("./handlers/inviteTrackerHandler");
     const {handleChatCommands} = require("./handlers/handleChatCommands");
+    const {getCountIds} = require("./utils/setcountingids");
+    const {handlecounting} = require("./utils/handlecounting");
     const cooldowns = new Map();
     const folderpath = path.join(__dirname, 'Commands');
     const CommandsFolder = fs.readdirSync(folderpath);
@@ -38,16 +40,20 @@
 
     deploy()
 
-    client.on("messageCreate", async (message) => {
-        if (getAiIds().includes(message.channel.id)) {
-            await handleaichat(message, client);
-        }
-    })
 
     client.on("messageCreate", async (message) => {
         if (message.author.bot === true) return
         if (getSuggestIds().includes(message.channel.id)) {
-        await handleSuggestions(message)
+            return await handleSuggestions(message)
+        }
+
+        if (getAiIds().includes(message.channel.id)) {
+            return await handleaichat(message, client);
+        }
+
+        if (getCountIds().includes(message.channel.id)) {
+            console.log("this was sent in a counting channel")
+            return await handlecounting(message)
         }
     })
 
