@@ -13,8 +13,9 @@ module.exports = {
         if (lastcounter === message.member.id) {
             return await message.reply({
                 embeds: [presets.warning("", "You cannot count twice in a row")]
-            }).then(message => {
+            }).then(newmessage => {
                 setTimeout(async () => {
+                    await newmessage.delete()
                     await message.delete()
                 }, 3000)
             })
@@ -25,7 +26,16 @@ module.exports = {
             await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=? WHERE server_id=?", [Number(lastnumber) + 1, message.member.id, message.guild.id])
             return message.react("✅")
         } else {
-            message.react("❌")
+            await message.react("❌")
+            await message.reply({
+                embeds: [presets.warning("", `Incorrect, the current number is ${Number(lastnumber) + 1}`)]
+            }).then(newmessage => {
+                setTimeout(async () => {
+                    await newmessage.delete()
+                    await message.delete()
+                }, 3000 )
+            })
+
         }
 
 
