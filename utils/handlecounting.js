@@ -2,9 +2,9 @@ const {queryone, db, execute} = require("./db");
 const {presets} = require("../data/embed");
 module.exports = {
     async handlecounting(message) {
-        let msg = message.content.toString().split(" ")
+        let msg = message.content.toString()
+        msg = msg.toLocaleLowerCase().split(" ")
         if (/\D/.test(msg[0])) return
-        msg = msg.toLocaleLowerCase()
         let {current_number: lastnumber, last_counter: lastcounter} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [message.guild.id])
         if (!lastnumber) {
             lastnumber = 0
