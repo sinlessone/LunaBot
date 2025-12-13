@@ -86,11 +86,6 @@ const db = new sqlite3.Database(dbpath);
         last_counter TEXT
         )
         `);
-        try {
-            await execute(db, "ALTER TABLE serverconfig ADD COLUMN altered_count INTEGER NOT NULL DEFAULT 0")
-        } catch (e) {
-            
-        }
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         id TEXT PRIMARY KEY,
         question TEXT NOT NULL,
