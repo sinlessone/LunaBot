@@ -4,7 +4,7 @@ const {setCountIds} = require("../../utils/setcountingids");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("setcountingnumber")
-        .setDescription("sets the current counting number")
+        .setDescription("sets the current counting number (warning: this disqualifies the server from leaderboards)")
         .addNumberOption(option => option
             .setName("number")
             .setDescription("The number to set last number to")
@@ -22,7 +22,7 @@ module.exports = {
             await registerserver(serverid)
         }
 
-        await execute(db, "UPDATE serverconfig SET current_number=? WHERE server_id=?", [number, serverid])
+        await execute(db, "UPDATE serverconfig SET current_number=?, altered_count=1 WHERE server_id=?", [number, serverid])
         const data = await queryall(db, "SELECT * FROM serverconfig")
         const counting_channel_id = data.map(item => item["counting_channel_id"])
         setCountIds(counting_channel_id)

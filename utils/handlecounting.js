@@ -44,7 +44,7 @@ module.exports = {
             await message.reply({
                 embeds: [presets.warning("FAIL", `<@${message.member.id}> messed up the count, the correct number was ${Number(lastnumber) + 1}`)]
             })
-            await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=? WHERE server_id=?", [0, 0, message.guild.id])
+            await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=?, altered_count=? WHERE server_id=?", [0, 0, 0, message.guild.id])
 
         }
 
