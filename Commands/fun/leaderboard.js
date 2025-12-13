@@ -16,13 +16,17 @@ module.exports = {
         let leaderboard = presets.info("TOP #10 COUNTERS")
         let i = 1
         for (const dataObject of data) {
-            const guild = await interaction.client.guilds.fetch(dataObject["server_id"])
-            leaderboard.addFields({
-                name: `**#${i}** ${guild.name}: **${dataObject["current_number"]}**`,
-                value: ""
+            try {
+                const guild = await interaction.client.guilds.fetch(dataObject["server_id"])
+                leaderboard.addFields({
+                        name: `**#${i}** ${guild.name}: **${dataObject["current_number"]}**`,
+                        value: ""
+                    }
+                )
+                i++
+            } catch (e) {
+                
             }
-            )
-            i++
         }
         await interaction.reply({
             embeds: [leaderboard]
