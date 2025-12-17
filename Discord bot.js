@@ -56,6 +56,7 @@
             return await handlecounting(message)
         }
     })
+    await execute(db, "DROP TABLE qotd")
 
     client.on(Events.InteractionCreate, async interaction => {
         if (!interaction.isButton()) return;
