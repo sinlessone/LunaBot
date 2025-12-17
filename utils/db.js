@@ -83,12 +83,12 @@ const db = new sqlite3.Database(dbpath);
         ai_channel_id TEXT,
         counting_channel_id TEXT,
         current_number TEXT,
-        last_counter TEXT
+        last_counter TEXT,
+        qotd_channel INTEGER
         )
         `);
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
-        id TEXT PRIMARY KEY,
-        question TEXT NOT NULL,
+        question TEXT PRIMARY KEY,
         used TEXT DEFAULT 'false'
         )
         `);

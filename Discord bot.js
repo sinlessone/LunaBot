@@ -13,13 +13,14 @@
     const {handlecommands} = require("./utils/handlecommands");
     const {getAiIds} = require("./utils/setaiids");
     const {deploy} = require("./Deploy");
-    const {execute, db, queryone} = require("./utils/db");
+    const {execute, db, queryone, queryall} = require("./utils/db");
     const {getSuggestIds} = require("./utils/setsuggestids");
     const {handleSuggestions} = require("./utils/handleSuggestions");
     const {inviteTrackerHandler} = require("./handlers/inviteTrackerHandler");
     const {handleChatCommands} = require("./handlers/handleChatCommands");
     const {getCountIds} = require("./utils/setcountingids");
     const {handlecounting} = require("./utils/handlecounting");
+    const {getQotd} = require("./utils/getqotd");
     const cooldowns = new Map();
     const folderpath = path.join(__dirname, 'Commands');
     const CommandsFolder = fs.readdirSync(folderpath);
@@ -107,7 +108,27 @@
     init(client, "./config.json")
     .then(async () => {
         console.log("initialized successfully")
-        cron.schedule("0 9 * * *", async () => {
+        let lastQotd = "this is the first qotd, generate anything"
+        cron.schedule("0 0 0 * * *", async () => {
+            const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])
+
+            const qotdchannels = data.map(item => item["qotd_channel"])
+            for (const item of qotdchannels) {
+                try {
+                    const qotd = await getQotd(lastQotd)
+                    lastQotd = qotd
+                    console.log(lastQotd)
+                    const channel = await client.channels.fetch(item)
+                    if (qotd.text) {
+                        await channel.send(qotd.text)
+                    } else {
+                        const {question: question} = await queryone(db, "SELECT question FROM qotd WHERE used=0 ORDER BY random()")
+                        await channel.send(question)
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
+            }
 
         })
     }).catch(error => {

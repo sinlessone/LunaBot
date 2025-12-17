@@ -12,16 +12,10 @@ module.exports = {
             .setDescription('The question to add')
             .setMaxLength(300)
             .setRequired(true)),
+    adminOnly: true,
     async execute(interaction) {
         const question = interaction.options.getString('question');
         const id = randomUUID()
-
-        if (!await exists(db, interaction.user.id)) {
-            return await interaction.reply({
-                content: `You are not registered. Please register with /register.`,
-                flags: MessageFlags.Ephemeral
-            });
-        }
 
         await execute(db, "INSERT INTO qotd (id, question) VALUES (?, ?)", [id, question]);
         await interaction.reply(`QOTD added successfully! ID: ${id}`);
