@@ -89,7 +89,7 @@ const db = new sqlite3.Database(dbpath);
         `);
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         question TEXT PRIMARY KEY,
-        used TEXT DEFAULT 'false'
+        used INTEGER DEFAULT 0
         )
         `);
             await execute(db, `CREATE TABLE IF NOT EXISTS invites (

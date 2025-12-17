@@ -110,6 +110,7 @@
         console.log("initialized successfully")
         let lastQotd = "this is the first qotd, generate anything"
         cron.schedule("0 0 0 * * *", async () => {
+            await execute(db, "DROP TABLE qotd")
 
             const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])
 

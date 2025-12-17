@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { execute, queryone, db, exists } = require('../../utils/db');
 const config = require('../../config.json');
-const {randomUUID} = require("node:crypto");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,9 +14,8 @@ module.exports = {
     adminOnly: true,
     async execute(interaction) {
         const question = interaction.options.getString('question');
-        const id = randomUUID()
 
-        await execute(db, "INSERT INTO qotd (id, question) VALUES (?, ?)", [id, question]);
-        await interaction.reply(`QOTD added successfully! ID: ${id}`);
+        await execute(db, "INSERT INTO qotd (question) VALUES ( ?)", [question]);
+        await interaction.reply(`QOTD added successfully!`);
     }
 }
