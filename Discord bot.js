@@ -56,7 +56,6 @@
             return await handlecounting(message)
         }
     })
-    await execute(db, "DROP TABLE qotd")
 
     client.on(Events.InteractionCreate, async interaction => {
         if (!interaction.isButton()) return;
@@ -111,6 +110,8 @@
         console.log("initialized successfully")
         let lastQotd = "this is the first qotd, generate anything"
         cron.schedule("0 0 0 * * *", async () => {
+            await execute(db, "DROP TABLE qotd")
+
             const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])
 
             const qotdchannels = data.map(item => item["qotd_channel"])
