@@ -48,10 +48,10 @@ function parseAnyNumber(input) {
 
     // 3. Try Roman Numeral Parsing
     // Check if string contains ONLY Roman characters (I, V, X, L, C, D, M)
-    if (/^[IVXLCDM]+$/i.test(str)) {
+    /* if (/^[IVXLCDM]+$/i.test(str)) {
         return parseRoman(str);
     }
-
+    */
     // 4. Failed
     return NaN;
 }
