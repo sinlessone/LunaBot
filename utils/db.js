@@ -111,7 +111,6 @@ const db = new sqlite3.Database(dbpath);
         denied INTEGER DEFAULT 0
         )
         `);
-            await execute(db, `ALTER TABLE serverconfig ADD COLUMN qotd_channel TEXT`)
             await execute(db, `CREATE TABLE IF NOT EXISTS votes (
         suggestionId TEXT NOT NULL,
         userId TEXT NOT NULL,
