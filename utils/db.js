@@ -84,9 +84,11 @@ const db = new sqlite3.Database(dbpath);
         counting_channel_id TEXT,
         current_number TEXT,
         last_counter TEXT,
-        qotd_channel INTEGER
+        qotd_channel INTEGER,
+        qotd_enabled INTEGER DEFAULT 0
         )
         `);
+        await execute(db, `ALTER TABLE serverconfig ADD COLUMN qotd_enabled INTEGER DEFAULT 0`)
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         question TEXT PRIMARY KEY,
         used INTEGER DEFAULT 0
