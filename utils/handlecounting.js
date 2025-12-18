@@ -27,7 +27,7 @@ module.exports = {
 
         if (Number(msg[0]) === Number(lastnumber) + 1) {
             await execute(db, "UPDATE serverconfig SET current_number=?, last_counter=? WHERE server_id=?", [Number(lastnumber) + 1, message.member.id, message.guild.id])
-            return message.react("✅")
+            return await message.react("✅")
         } else {
             if (Number(lastnumber) === 0) {
                 await message.react("❌")
