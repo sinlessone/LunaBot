@@ -88,7 +88,6 @@ const db = new sqlite3.Database(dbpath);
         qotd_enabled INTEGER DEFAULT 0
         )
         `);
-        await execute(db, `ALTER TABLE serverconfig ADD COLUMN qotd_enabled INTEGER DEFAULT 0`)
             await execute(db, `CREATE TABLE IF NOT EXISTS qotd (
         question TEXT PRIMARY KEY,
         used INTEGER DEFAULT 0
