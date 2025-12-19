@@ -10,6 +10,7 @@ module.exports = {
                 embeds: [presets.warning("", "You do not have permissions to use this command")]
             })
         }
+        console.log("I passed")
 
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return message.reply({
@@ -87,11 +88,14 @@ module.exports = {
 
             const toBanRolePosition = toBan.roles.highest.position
 
-            if (toBanRolePosition >= bannerRolePosition && toBan.id !== message.guild.ownerId) {
-                return message.reply({
-                    embeds: [presets.warning("", `You do not have permissions to ban this member`)],
-                })
+            if (message.guild.ownerId !== message.member.id) {
+                if (toBanRolePosition >= bannerRolePosition && toBan.id !== message.guild.ownerId) {
+                    return message.reply({
+                        embeds: [presets.warning("", `You do not have permissions to ban this member`)],
+                    })
+                }
             }
+
 
             try {
                 await toBan.ban({
