@@ -118,7 +118,6 @@
             lastQotd = qotd
             for (const item of qotdchannels) {
                 try {
-                    console.log(lastQotd)
                     const channel = await client.channels.fetch(item)
                     if (qotd.text) {
                         await channel.send(qotd.text)
