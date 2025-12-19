@@ -44,9 +44,12 @@ module.exports = {
                 }
             }
         } catch(error) {
+            console.log(error)
             if (error instanceof ApiError) {
-                if (error.status === 503) {
+                if (error.status === 503 || error.status === 429) {
                     return await message.reply("The AI model is currently overloaded, please retry later")
+                } else {
+                    await message.reply("An unhandled error occurred, if persistent, contact the bot owner.")
                 }
             } else {
                 await message.reply("An unhandled error occurred, if persistent, contact the bot owner.")
