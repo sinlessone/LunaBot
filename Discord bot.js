@@ -114,10 +114,10 @@
             const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])
 
             const qotdchannels = data.map(item => item["qotd_channel"])
+            const qotd = await getQotd(lastQotd)
+            lastQotd = qotd
             for (const item of qotdchannels) {
                 try {
-                    const qotd = await getQotd(lastQotd)
-                    lastQotd = qotd
                     console.log(lastQotd)
                     const channel = await client.channels.fetch(item)
                     if (qotd.text) {
