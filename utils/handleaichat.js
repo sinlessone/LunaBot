@@ -44,7 +44,6 @@ module.exports = {
                 }
             }
         } catch(error) {
-            console.log(error)
             if (error instanceof ApiError) {
                 if (error.status === 503 || error.status === 429) {
                     return await message.reply("The AI model is currently overloaded, please retry later")
