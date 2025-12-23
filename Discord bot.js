@@ -83,11 +83,15 @@
 
     client.on(Events.ClientReady, async () => {
         for (const [guildId, guild] of client.guilds.cache) {
-            const firstinvites = await guild.invites.fetch()
-            invites.set(
-                guildId,
-                new Map(firstinvites.map((invite) => [invite.code, invite.uses]))
-            )
+            try {
+                const firstinvites = await guild.invites.fetch()
+                invites.set(
+                    guildId,
+                    new Map(firstinvites.map((invite) => [invite.code, invite.uses]))
+                )
+            } catch (e) {
+                console.log(e)
+            }
         }
     })
 
