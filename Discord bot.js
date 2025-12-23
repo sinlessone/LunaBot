@@ -84,13 +84,14 @@
     client.on(Events.ClientReady, async () => {
         for (const [guildId, guild] of client.guilds.cache) {
             try {
+
                 const firstinvites = await guild.invites.fetch()
                 invites.set(
                     guildId,
                     new Map(firstinvites.map((invite) => [invite.code, invite.uses]))
                 )
             } catch (e) {
-                console.log(e)
+                // possibly dm the server's owner or notify him of insufficient permissions
             }
         }
     })
