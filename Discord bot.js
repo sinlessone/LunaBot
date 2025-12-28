@@ -84,7 +84,6 @@
     client.on(Events.ClientReady, async () => {
         for (const [guildId, guild] of client.guilds.cache) {
             try {
-
                 const firstinvites = await guild.invites.fetch()
                 invites.set(
                     guildId,
