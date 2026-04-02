@@ -1,5 +1,5 @@
 const {ActionRowBuilder, ButtonBuilder, ButtonStyle} = require("discord.js");
-const {execute, db} = require("./db");
+const {execute, db} = require("../utils/db");
 const { v4: uuidv4 } = require('uuid');
 const {presets} = require("../data/embed");
 async function handleSuggestions(message) {

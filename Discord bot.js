@@ -1,4 +1,6 @@
-    const { Client, Events, GatewayIntentBits, Collection, ButtonStyle, MessageFlags, ActionRowBuilder, ButtonBuilder} = require('discord.js');
+    const { Client, Events, GatewayIntentBits, Collection, ButtonStyle, MessageFlags, ActionRowBuilder, ButtonBuilder,
+        Partials
+    } = require('discord.js');
     const fs = require('fs');
     const loadButtonHandler = require('./handlers/buttonhandler');
     const path = require('path');
@@ -8,19 +10,21 @@
     const cron = require('node-cron');
     const { v4: uuidv4 } = require('uuid');
     const {init} = require("./utils/initializebot");
-    const {handleaichat} = require("./utils/handleaichat");
+    const {handleaichat} = require("./handlers/handleaichat");
     const {loadcommands} = require("./utils/loadcommands");
-    const {handlecommands} = require("./utils/handlecommands");
+    const {handlecommands} = require("./handlers/handlecommands");
     const {getAiIds} = require("./utils/setaiids");
     const {deploy} = require("./Deploy");
     const {execute, db, queryone, queryall} = require("./utils/db");
     const {getSuggestIds} = require("./utils/setsuggestids");
-    const {handleSuggestions} = require("./utils/handleSuggestions");
+    const {handleSuggestions} = require("./handlers/handleSuggestions");
     const {inviteTrackerHandler} = require("./handlers/inviteTrackerHandler");
     const {handleChatCommands} = require("./handlers/handleChatCommands");
     const {getCountIds} = require("./utils/setcountingids");
-    const {handlecounting} = require("./utils/handlecounting");
+    const {handlecounting} = require("./handlers/handlecounting");
     const {getQotd} = require("./utils/getqotd");
+    const {getreactids} = require("./utils/setreactions");
+    const {handlereactions} = require("./handlers/handlereactions");
     const cooldowns = new Map();
     const folderpath = path.join(__dirname, 'Commands');
     const CommandsFolder = fs.readdirSync(folderpath);
@@ -30,7 +34,13 @@
             GatewayIntentBits.Guilds,
             GatewayIntentBits.GuildMembers,
             GatewayIntentBits.GuildMessages,
-            GatewayIntentBits.MessageContent
+            GatewayIntentBits.MessageContent,
+            GatewayIntentBits.GuildMessageReactions
+        ],
+        partials:[
+            Partials.Message,
+            Partials.Reaction,
+            Partials.User
         ]
     });
     client.commands = new Collection();
@@ -108,6 +118,22 @@
             await handlecommands(client, interaction, config, cooldowns)
         }
     });
+
+    client.on(Events.MessageReactionAdd, async (reaction, user) => {
+        if (user.bot) return
+        if (!getreactids().includes(reaction.message.id)) return
+
+        await handlereactions(client, reaction, user, true)
+
+    })
+
+    client.on(Events.MessageReactionRemove, async (reaction, user) => {
+        if (user.bot) return
+        if (!getreactids().includes(reaction.message.id)) return
+
+        await handlereactions(client, reaction, user, false)
+
+    })
 
     init(client, "./config.json")
     .then(async () => {

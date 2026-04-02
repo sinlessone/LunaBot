@@ -112,6 +112,13 @@ const db = new sqlite3.Database(dbpath);
         denied INTEGER DEFAULT 0
         )
         `);
+            await execute(db, `CREATE TABLE IF NOT EXISTS reactionroles (
+        guildId TEXT,
+        messageId TEXT,
+        emoji TEXT,
+        roleId TEXT
+        )
+        `);
             await execute(db, `CREATE TABLE IF NOT EXISTS votes (
         suggestionId TEXT NOT NULL,
         userId TEXT NOT NULL,
@@ -136,10 +143,13 @@ const db = new sqlite3.Database(dbpath);
         async function getaichannels() {
         return await queryall(db, "SELECT ai_channel_id FROM serverconfig");
         }
+        async function getreactionids() {
+        return await queryall(db, "SELECT messageId FROM reactionroles");
+        }
         async function getsuggestchannels() {
         return await queryall(db, "SELECT * FROM serverconfig");
         }
         async function getcountingchannels() {
         return await queryall(db, "SELECT counting_channel_id FROM serverconfig");
         }
-module.exports = { execute, queryall, queryone, initDb, exists, registerserver, serverindb, getaichannels, getsuggestchannels, getcountingchannels, db}
+module.exports = { execute, queryall, queryone, initDb, exists, registerserver, serverindb, getaichannels, getsuggestchannels, getcountingchannels, getreactionids, db}

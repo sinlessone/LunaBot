@@ -1,4 +1,4 @@
-const {getresponse} = require("./getresponse");
+const {getresponse} = require("../utils/getresponse");
 const path = require("path");
 const fs = require("fs");
 const { ApiError } =  require("@google/genai")

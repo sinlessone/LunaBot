@@ -1,4 +1,4 @@
-const {getaichannels, initDb, getsuggestchannels, queryone, db, getcountingchannels, execute} = require("./db");
+const {getaichannels, initDb, getsuggestchannels, queryone, db, getcountingchannels, execute, getreactionids} = require("./db");
 const {fixConfig} = require("./fixconfig");
 const fs = require("fs");
 const path = require("path")
@@ -6,13 +6,16 @@ const chalk = require("chalk");
 const {setAiIds} = require("./setaiids");
 const {getSuggestIds} = require("./setsuggestids");
 const {setCountIds} = require("./setcountingids");
+const {getreactids, setreactids} = require("./setreactions");
 module.exports = {
     async init( client, configpath) {
         await initDb();
         const aichannels = await getaichannels()
         const countchannels = await getcountingchannels()
+        const reactionids = await getreactionids()
         setAiIds(aichannels.map(item => item.ai_channel_id))
         setCountIds(countchannels.map(item => item.counting_channel_id))
+        setreactids(reactionids.map(item => item.messageId))
         await fixConfig();
         const config = JSON.parse(fs.readFileSync(path.resolve(configpath)));
         if (!config.ownerID) {

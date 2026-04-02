@@ -1,6 +1,6 @@
-const {queryone, db, execute} = require("./db");
+const {queryone, db, execute} = require("../utils/db");
 const {presets} = require("../data/embed");
-const parseAnyNumber = require("./toArabicNum");
+const parseAnyNumber = require("../utils/toArabicNum");
 module.exports = {
     async handlecounting(message) {
         let msg = message.content.toString().toLowerCase().split(" ")

@@ -1,9 +1,9 @@
 const chalk = require("chalk");
-const {getaichannels} = require("./db");
+const {getaichannels} = require("../utils/db");
 const {handlecd} = require("./handlecd");
 const {MessageFlags, PermissionsBitField} = require("discord.js");
 const {handleerror} = require("./handleerror");
-const {setAiIds} = require("./setaiids");
+const {setAiIds} = require("../utils/setaiids");
 const {presets} = require("../data/embed");
 module.exports = {
     async handlecommands(client, interaction, config, cooldowns){

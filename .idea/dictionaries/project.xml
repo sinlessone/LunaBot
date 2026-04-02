@@ -3,8 +3,12 @@
     <words>
       <w>addqotd</w>
       <w>checknum</w>
+      <w>duplicaterole</w>
       <w>firstinvites</w>
+      <w>getreactids</w>
+      <w>getreactionids</w>
       <w>handlecounting</w>
+      <w>hasreactions</w>
       <w>lastcounter</w>
       <w>lastnumber</w>
       <w>newmessage</w>
@@ -19,6 +23,7 @@
       <w>serverid</w>
       <w>serverindb</w>
       <w>setcountingnumber</w>
+      <w>setreactids</w>
       <w>setupcounting</w>
     </words>
   </dictionary>
