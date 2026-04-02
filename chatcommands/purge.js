@@ -1,6 +1,6 @@
-const {PermissionsBitField, resolveColor, MessageFlags, EmbedBuilder} = require("discord.js");
-const {purge} = require("../utils/purge");
-const {presets} = require("../data/embed");
+const { PermissionsBitField, resolveColor, MessageFlags, EmbedBuilder } = require("discord.js");
+const { purge } = require("../utils/purge");
+const { presets } = require("../data/embed");
 module.exports = {
     async chatPurge(message) {
 
@@ -25,11 +25,11 @@ module.exports = {
             })
         }
 
-            if (/\D/.test(command[1])) {
-                return message.reply({
-                    embeds: [presets.warning("", "please only provide a number")]
-                })
-            }
+        if (/\D/.test(command[1])) {
+            return message.reply({
+                embeds: [presets.warning("", "please only provide a number")]
+            })
+        }
         if (Number(command[1]) === 0) {
             return message.reply({
                 embeds: [presets.warning("", "Please provide a number different than 0")]
@@ -40,23 +40,25 @@ module.exports = {
                 embeds: [presets.warning("", "The maximum number of messages to be deleted is 1000")]
             })
         }
-            try {
-                const deleted = await purge(message, Number(command[1]))
-                if (deleted === 0) {
-                    return await message.reply({
-                        embeds: [presets.warning("No messages deleted", `no messages younger than 2 weeks were find, if this is a bug please contact the bot owner.`)]
-                    })
-                }
-                await message.reply({
-                    embeds: [presets.success("SUCCESS", `successfully purged ${deleted} messages`)]
+        try {
+            const deleted = await purge(message, Number(command[1]))
+            if (deleted === 0) {
+                return await message.reply({
+                    embeds: [presets.warning("No messages deleted", `no messages younger than 2 weeks were find, if this is a bug please contact the bot owner.`)]
                 })
-            } catch (e) {
+            }
+            await message.reply({
+                embeds: [presets.success("SUCCESS", `successfully purged ${deleted} messages`)]
+            })
+        } catch (e) {
             console.log(e)
+            try {
                 await message.reply({
                     embeds: [presets.error("ERROR", "an unhandled error caught, if persistent please contact the bot owner")]
                 })
-            }
-
-
+            } catch (e) { }
         }
+
+
+    }
 }
