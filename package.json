@@ -22,6 +22,7 @@
     "multicoin-address-validator": "^0.5.25",
     "node-cron": "^4.2.1",
     "openai": "^6.33.0",
+    "sharp": "^0.34.5",
     "sqlite3": "^5.1.7",
     "unfurl.js": "^6.4.0",
     "uuid": "^11.1.0"
