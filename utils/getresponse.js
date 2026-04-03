@@ -65,7 +65,6 @@ async function describeImage(base64DataUrl) {
             temperature: 0.5,
             max_tokens: 100,
         });
-        console.log(response.choices[0].message.content)
         return response.choices[0].message.content;
     } catch (error) {
         console.error("Groq Vision Error:", error.message);
