@@ -12,7 +12,7 @@
     "@api/poof": "file:.api/apis/poof",
     "@google/genai": "^1.9.0",
     "@mistralai/mistralai": "^2.1.2",
-    "axios": "^1.8.4",
+    "axios": "1.13.5",
     "better-sqlite3": "^11.10.0",
     "chalk": "^4.1.2",
     "discord.js": "^14.21.0",
