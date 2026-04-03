@@ -63,7 +63,6 @@ module.exports = {
 
                             // --- NEW: GIF FIRST FRAME EXTRACTION ---
                             if (mediaType === "GIF" || contentType === "image/gif") {
-                                console.log("[DEBUG] Extracting first frame from GIF...");
                                 buffer = await sharp(buffer, { page: 0 }) // Page 0 is the first frame
                                     .toFormat('jpeg')
                                     .toBuffer();
