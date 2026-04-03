@@ -25,8 +25,7 @@ module.exports = {
                 if (message.reference) {
                     reference = await message.channel.messages.fetch(message.reference.messageId)
                 }
-                const response = await getresponse(message.content, history, client.user.username, `display name: ${message.author.displayName} OR username: ${message.author.username}`, reference, message.author.id)
-                let responsetext = response.text
+                let responsetext = await getresponse(message.content, history, client.user.username, `display name: ${message.author.displayName} OR username: ${message.author.username}`, reference, message.author.id)
                 if (/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g.test(responsetext)) {
                     responsetext = responsetext.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, '(Not Allowed to ping that)');
                 }
@@ -48,9 +47,12 @@ module.exports = {
                 if (error.status === 503 || error.status === 429) {
                     return await message.reply("The AI model is currently overloaded, please retry later")
                 } else {
+                    console.log(error)
                     await message.reply("An unhandled error occurred, if persistent, contact the bot owner.")
                 }
             } else {
+                console.log(error)
+
                 await message.reply("An unhandled error occurred, if persistent, contact the bot owner.")
 
             }
