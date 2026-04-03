@@ -159,6 +159,14 @@ module.exports = {
                         {
                             name:  "/inviter <user>",
                             value:  "See who invited a user (Moderator only)"
+                        },
+                        {
+                            name: "/reactionrole add <messageid> <emoji> <role>",
+                            value: "Add a reaction role to a message. Parameters: messageid, emoji, role."
+                        },
+                        {
+                            name: "/reactionrole remove <messageid>",
+                            value: "Remove all reaction roles from a message. Parameter: messageid."
                         }
                     )
                 ]
