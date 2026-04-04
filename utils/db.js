@@ -140,8 +140,6 @@ const db = new sqlite3.Database(dbpath);
         async function registerserver(id) {
         await execute(db, "INSERT INTO serverconfig(server_id) VALUES(?)", [id]);
         }
-        execute(db, "ALTER TABLE serverconfig ADD COLUMN current_number_message_id TEXT ");
-
         async function getaichannels() {
         return await queryall(db, "SELECT ai_channel_id FROM serverconfig");
         }
