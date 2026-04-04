@@ -83,6 +83,7 @@ const db = new sqlite3.Database(dbpath);
         ai_channel_id TEXT,
         counting_channel_id TEXT,
         current_number TEXT,
+        current_number_message_id TEXT,
         last_counter TEXT,
         qotd_channel INTEGER,
         qotd_enabled INTEGER DEFAULT 0
@@ -139,6 +140,7 @@ const db = new sqlite3.Database(dbpath);
         async function registerserver(id) {
         await execute(db, "INSERT INTO serverconfig(server_id) VALUES(?)", [id]);
         }
+        execute(db, "ALTER TABLE serverconfig ADD COLUMN current_number_message_id TEXT ");
 
         async function getaichannels() {
         return await queryall(db, "SELECT ai_channel_id FROM serverconfig");

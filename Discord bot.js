@@ -1,141 +1,155 @@
-    const { Client, Events, GatewayIntentBits, Collection, ButtonStyle, MessageFlags, ActionRowBuilder, ButtonBuilder,
-        Partials
-    } = require('discord.js');
-    const fs = require('fs');
-    const loadButtonHandler = require('./handlers/buttonhandler');
-    const path = require('path');
-    require('dotenv').config({ path: ".env" });
-    const chalk = require("chalk");
-    const { ChangeStatus } = require('./utils/ChangeStatus')
-    const cron = require('node-cron');
-    const { v4: uuidv4 } = require('uuid');
-    const {init} = require("./utils/initializebot");
-    const {handleaichat} = require("./handlers/handleaichat");
-    const {loadcommands} = require("./utils/loadcommands");
-    const {handlecommands} = require("./handlers/handlecommands");
-    const {getAiIds} = require("./utils/setaiids");
-    const {deploy} = require("./Deploy");
-    const {execute, db, queryone, queryall} = require("./utils/db");
-    const {getSuggestIds} = require("./utils/setsuggestids");
-    const {handleSuggestions} = require("./handlers/handleSuggestions");
-    const {inviteTrackerHandler} = require("./handlers/inviteTrackerHandler");
-    const {handleChatCommands} = require("./handlers/handleChatCommands");
-    const {getCountIds} = require("./utils/setcountingids");
-    const {handlecounting} = require("./handlers/handlecounting");
-    const {getQotd} = require("./utils/getqotd");
-    const {getreactids} = require("./utils/setreactions");
-    const {handlereactions} = require("./handlers/handlereactions");
-    const cooldowns = new Map();
-    const folderpath = path.join(__dirname, 'Commands');
-    const CommandsFolder = fs.readdirSync(folderpath);
-    const fpath = path.join(__dirname, "/config.json")
-    const invites = new Map();
-    const client = new Client({ intents: [
-            GatewayIntentBits.Guilds,
-            GatewayIntentBits.GuildMembers,
-            GatewayIntentBits.GuildMessages,
-            GatewayIntentBits.MessageContent,
-            GatewayIntentBits.GuildMessageReactions
-        ],
-        partials:[
-            Partials.Message,
-            Partials.Reaction,
-            Partials.User
-        ]
-    });
-    client.commands = new Collection();
-    client.buttons = new Collection();
-    loadButtonHandler(client)
-    let config = JSON.parse(fs.readFileSync(fpath).toString())
-    loadcommands(client, CommandsFolder, folderpath)
+const { Client, Events, GatewayIntentBits, Collection, ButtonStyle, MessageFlags, ActionRowBuilder, ButtonBuilder,
+    Partials
+} = require('discord.js');
+const fs = require('fs');
+const loadButtonHandler = require('./handlers/buttonhandler');
+const path = require('path');
+require('dotenv').config({ path: ".env" });
+const chalk = require("chalk");
+const { ChangeStatus } = require('./utils/ChangeStatus')
+const cron = require('node-cron');
+const { v4: uuidv4 } = require('uuid');
+const {init} = require("./utils/initializebot");
+const {handleaichat} = require("./handlers/handleaichat");
+const {loadcommands} = require("./utils/loadcommands");
+const {handlecommands} = require("./handlers/handlecommands");
+const {getAiIds} = require("./utils/setaiids");
+const {deploy} = require("./Deploy");
+const {execute, db, queryone, queryall} = require("./utils/db");
+const {getSuggestIds} = require("./utils/setsuggestids");
+const {handleSuggestions} = require("./handlers/handleSuggestions");
+const {inviteTrackerHandler} = require("./handlers/inviteTrackerHandler");
+const {handleChatCommands} = require("./handlers/handleChatCommands");
+const {getCountIds} = require("./utils/setcountingids");
+const {handlecounting} = require("./handlers/handlecounting");
+const {getQotd} = require("./utils/getqotd");
+const {getreactids} = require("./utils/setreactions");
+const {handlereactions} = require("./handlers/handlereactions");
+const {handlecountingsabotage} = require("./handlers/handlecountingsabotage");
+const cooldowns = new Map();
+const folderpath = path.join(__dirname, 'Commands');
+const CommandsFolder = fs.readdirSync(folderpath);
+const fpath = path.join(__dirname, "/config.json")
+const invites = new Map();
+const client = new Client({ intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions
+    ],
+    partials:[
+        Partials.Message,
+        Partials.Reaction,
+        Partials.User
+    ]
+});
+client.commands = new Collection();
+client.buttons = new Collection();
+loadButtonHandler(client)
+let config = JSON.parse(fs.readFileSync(fpath).toString())
+loadcommands(client, CommandsFolder, folderpath)
 
-    deploy()
+deploy()
 
 
-    client.on("messageCreate", async (message) => {
-        if (message.author.bot === true) return
-        if (getSuggestIds().includes(message.channel.id)) {
-            return await handleSuggestions(message)
-        }
+client.on("messageCreate", async (message) => {
+    if (message.author.bot === true) return
+    if (getSuggestIds().includes(message.channel.id)) {
+        return await handleSuggestions(message)
+    }
 
-        if (getAiIds().includes(message.channel.id)) {
-            return await handleaichat(message, client);
-        }
+    if (getAiIds().includes(message.channel.id)) {
+        return await handleaichat(message, client);
+    }
 
-        if (getCountIds().includes(message.channel.id)) {
-            return await handlecounting(message)
-        }
-    })
+    if (getCountIds().includes(message.channel.id)) {
+        return await handlecounting(message)
+    }
+})
 
-    client.on(Events.InteractionCreate, async interaction => {
-        if (!interaction.isButton()) return;
+client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isButton()) return;
 
-        const button = client.buttons.get(interaction.customId);
-        if (!button)
-            return await interaction.reply("no handler for this button");
+    const button = client.buttons.get(interaction.customId);
+    if (!button)
+        return await interaction.reply("no handler for this button");
+    try {
+        await button.execute(interaction)
+    } catch (e) {
+        console.log(e + e.stack)
+        await interaction.reply({
+            content: "an unhandled error occurred",
+            flags: MessageFlags.Ephemeral
+        })
+    }
+})
+
+client.once(Events.ClientReady, async () => {
+    console.log(`Logged in as ${client.user.tag}`);
+    if (config.status) {
+        await ChangeStatus(client, config.status, config.appearance)
+    }
+});
+
+client.on(Events.ClientReady, async () => {
+    for (const [guildId, guild] of client.guilds.cache) {
         try {
-            await button.execute(interaction)
+            const firstinvites = await guild.invites.fetch()
+            invites.set(
+                guildId,
+                new Map(firstinvites.map((invite) => [invite.code, invite.uses]))
+            )
         } catch (e) {
-            console.log(e + e.stack)
-            await interaction.reply({
-                content: "an unhandled error occurred",
-                flags: MessageFlags.Ephemeral
-            })
+            // possibly dm the server's owner or notify him of insufficient permissions
         }
-    })
+    }
+})
 
-    client.once(Events.ClientReady, async () => {
-        console.log(`Logged in as ${client.user.tag}`);
-        if (config.status) {
-            await ChangeStatus(client, config.status, config.appearance)
-        }
-    });
+client.on(Events.MessageCreate, async (message) => {
+    await handleChatCommands(message, client)
+})
 
-    client.on(Events.ClientReady, async () => {
-        for (const [guildId, guild] of client.guilds.cache) {
-            try {
-                const firstinvites = await guild.invites.fetch()
-                invites.set(
-                    guildId,
-                    new Map(firstinvites.map((invite) => [invite.code, invite.uses]))
-                )
-            } catch (e) {
-                // possibly dm the server's owner or notify him of insufficient permissions
-            }
-        }
-    })
+client.on(Events.GuildMemberAdd, async (member) => {
+    await inviteTrackerHandler(member, invites)
+})
 
-    client.on(Events.MessageCreate, async (message) => {
-        await handleChatCommands(message, client)
-    })
+client.on(Events.InteractionCreate, async interaction => {
+    if (interaction.isChatInputCommand()) {
+        await handlecommands(client, interaction, config, cooldowns)
+    }
+});
 
-    client.on(Events.GuildMemberAdd, async (member) => {
-        await inviteTrackerHandler(member, invites)
-    })
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    if (user.bot) return
+    if (!getreactids().includes(reaction.message.id)) return
 
-    client.on(Events.InteractionCreate, async interaction => {
-        if (interaction.isChatInputCommand()) {
-            await handlecommands(client, interaction, config, cooldowns)
-        }
-    });
+    await handlereactions(client, reaction, user, true)
 
-    client.on(Events.MessageReactionAdd, async (reaction, user) => {
-        if (user.bot) return
-        if (!getreactids().includes(reaction.message.id)) return
+})
 
-        await handlereactions(client, reaction, user, true)
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+    if (user.bot) return
+    if (!getreactids().includes(reaction.message.id)) return
 
-    })
+    await handlereactions(client, reaction, user, false)
 
-    client.on(Events.MessageReactionRemove, async (reaction, user) => {
-        if (user.bot) return
-        if (!getreactids().includes(reaction.message.id)) return
+})
 
-        await handlereactions(client, reaction, user, false)
+client.on(Events.MessageUpdate, async (message) => {
+    await handlecountingsabotage(message)
+})
 
-    })
+client.on(Events.MessageDelete, async (message) => {
+    await handlecountingsabotage(message)
+})
 
-    init(client, "./config.json")
+
+
+
+
+
+init(client, "./config.json")
     .then(async () => {
         console.log("initialized successfully")
         let lastQotd = "this is the first qotd, generate anything"
@@ -162,5 +176,5 @@
 
         })
     }).catch(error => {
-        console.error(chalk.red(`[ERROR] A FATAL ERROR OCCURRED, ${error.stack}`))
+    console.error(chalk.red(`[ERROR] A FATAL ERROR OCCURRED, ${error.stack}`))
 })
