@@ -1,5 +1,5 @@
 const {getCountIds} = require("../utils/setcountingids");
-const {queryone, db} = require("../utils/db");
+const {queryone, db, execute} = require("../utils/db");
 const {reply} = require("../utils/wrapper");
 const {presets} = require("../data/embed");
 module.exports = {
@@ -12,5 +12,6 @@ module.exports = {
         await channel.send({
             embeds: [presets.warning("Counting Sabotage", `The current number is ${Number(lastnumber) + 1}, please continue counting from there`)]
         })
+        await execute(db, "UPDATE serverconfig SET current_number_message_id=? WHERE server_id=?", [null, message.guild.id])
     }
 }
