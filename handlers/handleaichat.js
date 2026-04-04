@@ -79,7 +79,7 @@ module.exports = {
                     }
                 }
 
-                const historydata = await message.channel.messages.fetch({ limit: 15, before: message.id });
+                const historydata = await message.channel.messages.fetch({ limit: 15});
                 const history = JSON.stringify(historydata.map(item => ({
                     author: item.author.displayName || item.author.username,
                     content: item.content
