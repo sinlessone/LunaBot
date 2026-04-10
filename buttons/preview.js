@@ -111,7 +111,7 @@ module.exports = {
                             .error("", suggestion)
                             .setFooter({ text: `(ID: ${suggestionId})` })
                             .setAuthor({
-                                name: `Suggestion | ${suggester.user.username}`,
+                                name: `Suggestion | ${suggester.username}`,
                                 iconURL: suggesterAvatar
                             })
                             .addFields({
@@ -137,7 +137,7 @@ module.exports = {
                             .success("", suggestion)
                             .setFooter({ text: `(ID: ${suggestionId})` })
                             .setAuthor({
-                                name: `Suggestion | ${suggester.user.username}`,
+                                name: `Suggestion | ${suggester.username}`,
                                 iconURL: suggesterAvatar
                             })
                             .addFields({
