@@ -99,7 +99,7 @@ module.exports = {
                 modalInteraction.fields.getTextInputValue("reason") || "No reason provided";
             await modalInteraction.deferUpdate();
 
-            if (["d", "deny", "den", "de"].includes(result.toLowerCase())) {
+            if (["d", "deny", "den", "de"].includes(result.trim().toLowerCase())) {
                 await execute(
                     db,
                     "UPDATE suggestions SET denied=? WHERE suggestionMessageId=? AND serverId=?",
@@ -121,10 +121,9 @@ module.exports = {
                     ],
                     components: [row]
                 });
-                await modalInteraction.deferUpdate();
                 await interaction.message.delete();
             } else if (
-                ["a", "ac", "acc", "acce", "accep", "accept"].includes(result.toLowerCase())
+                ["a", "ac", "acc", "acce", "accep", "accept"].includes(result.trim().toLowerCase())
             ) {
                 await execute(
                     db,
