@@ -1,5 +1,6 @@
     const {execute, db, queryone} = require("../utils/db");
     const { createEmbed, presets } = require('../data/embed');
+    const config = require('../config.json')
     const {resolveColor, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder,
         ButtonBuilder,
         ButtonStyle, PermissionsBitField
@@ -23,7 +24,7 @@ module.exports = {
         const suggester = await interaction.guild.members.fetch(suggesterId).catch(() => null);
 
 
-        const suggesterAvatar = suggester.user.avatarURL({ size: 128 }) ?? suggester.user.defaultAvatarURL
+        const suggesterAvatar = suggester.user.avatarURL({ size: 128 }) ?? suggester.user.defaultAvatarURL ?? config.footerUrl
 
         const row = new ActionRowBuilder()
             .addComponents(
