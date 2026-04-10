@@ -24,7 +24,7 @@ module.exports = {
         const suggester = await interaction.client.users.fetch(suggesterId).catch(() => null)
 
 
-        let suggesterAvatar = suggester.user.avatarURL({ size: 128 }) ?? suggester.user.defaultAvatarURL
+        let suggesterAvatar = suggester.user.displayAvatarURL({ size: 128}) ?? suggester.user.defaultAvatarURL
 
         const row = new ActionRowBuilder()
             .addComponents(
