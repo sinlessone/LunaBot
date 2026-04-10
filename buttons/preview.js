@@ -21,7 +21,7 @@ module.exports = {
         const { suggestion, suggesterId, upvotes, downvotes, suggestionId } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionMessageId=? AND serverId=?", [interaction.message.id, interaction.guild.id])
 
 
-        const suggester = await interaction.users.fetch(suggesterId).catch(() => null)
+        const suggester = await interaction.client.users.fetch(suggesterId).catch(() => null)
 
 
         let suggesterAvatar = suggester.user.avatarURL({ size: 128 }) ?? suggester.user.defaultAvatarURL
