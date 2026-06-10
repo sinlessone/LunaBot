@@ -66,7 +66,7 @@ module.exports = {
             winnings = 0;
         }
 
-        await execute(db, 'UPDATE users SET balance=balance+? WHERE user_id=?', [winnings - amount, user.id]);
+        await execute(db, 'UPDATE users SET balance=balance+? WHERE user_id=?', [Math.round(winnings - amount), user.id]);
 
         await interaction.reply({
             embeds: [
