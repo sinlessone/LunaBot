@@ -1,6 +1,7 @@
 const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
+const {presets} = require("../../data/embed");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,10 +16,12 @@ module.exports = {
     async execute(interaction) {
         const exist = await exists(db, interaction.user.id)
         if (!exist) {
-            return await interaction.reply({
-                content: `You are not registered, register with /register.`,
+            return interaction.reply({
+                embeds: [
+                    presets.error('❌ Registration Required', 'You are not registered. Use **/register** to get started.')
+                ],
                 flags: MessageFlags.Ephemeral
-            })
+            });
         }
         const input = interaction.options.getString('amount')
         if (isNaN(input)) {

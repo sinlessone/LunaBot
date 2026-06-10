@@ -1,6 +1,7 @@
 const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
 const { exists, execute, queryone, queryall, db} = require('../../utils/db')
 const config = require('../../config.json')
+const {presets} = require("../../data/embed");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,9 +28,11 @@ module.exports = {
             .setTimestamp();
         if (!userexists) {
             return interaction.reply({
-                embeds: [embed.setColor(resolveColor("Red")).setDescription(`❌ You are not registered. Use **/register** to get started.`)],
+                embeds: [
+                    presets.error('❌ Registration Required', 'You are not registered. Use **/register** to get started.')
+                ],
                 flags: MessageFlags.Ephemeral
-            })
+            });
         }
         if (interaction.user.id === target.id) {
             return interaction.reply({

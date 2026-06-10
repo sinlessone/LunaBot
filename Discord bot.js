@@ -46,6 +46,7 @@ const client = new Client({ intents: [
 });
 client.commands = new Collection();
 client.buttons = new Collection();
+client.blackjackGames = new Map();
 loadButtonHandler(client)
 let config = JSON.parse(fs.readFileSync(fpath).toString())
 loadcommands(client, CommandsFolder, folderpath)
