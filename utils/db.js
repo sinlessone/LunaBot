@@ -120,6 +120,7 @@ const db = new sqlite3.Database(dbpath);
         roleId TEXT
         )
         `);
+            await execute(db, "ALTER TABLE invites ADD COLUMN validInvite INTEGER NOT NULL DEFAULT 1")
             await execute(db, `CREATE TABLE IF NOT EXISTS votes (
         suggestionId TEXT NOT NULL,
         userId TEXT NOT NULL,
