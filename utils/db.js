@@ -98,7 +98,8 @@ const db = new sqlite3.Database(dbpath);
         serverId TEXT PRIMARY KEY,
         inviterId TEXT NOT NULL,
         invitedId TEXT NOT NULL,
-        inviteCode TEXT NOT NULL
+        inviteCode TEXT NOT NULL,
+        validInvite INTEGER NOT NULL DEFAULT 1
         )
         `);
             await execute(db, `CREATE TABLE IF NOT EXISTS suggestions (
