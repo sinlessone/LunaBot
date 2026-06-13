@@ -94,14 +94,47 @@ const db = new sqlite3.Database(dbpath);
         used INTEGER DEFAULT 0
         )
         `);
-            await execute(db, `CREATE TABLE IF NOT EXISTS invites (
-        serverId TEXT PRIMARY KEY,
-        inviterId TEXT NOT NULL,
-        invitedId TEXT NOT NULL,
-        inviteCode TEXT NOT NULL,
-        validInvite INTEGER NOT NULL DEFAULT 1
+            await execute(db, `PRAGMA foreign_keys=OFF;`);
+
+// 2. Start a transaction so that if anything fails, your database isn't left corrupted
+            await execute(db, `BEGIN TRANSACTION;`);
+
+            try {
+                // 3. Create the new table with the desired primary key schema
+                await execute(db, `
+        CREATE TABLE invites_new (
+            serverId TEXT NOT NULL,
+            inviterId TEXT NOT NULL,
+            invitedId TEXT NOT NULL,
+            inviteCode TEXT NOT NULL,
+            validInvite INTEGER NOT NULL DEFAULT 1,
+            PRIMARY KEY (invitedId, serverId)
         )
-        `);
+    `);
+
+                // 4. Copy the existing data to the new table
+                await execute(db, `
+        INSERT INTO invites_new (serverId, inviterId, invitedId, inviteCode, validInvite)
+        SELECT serverId, inviterId, invitedId, inviteCode, validInvite
+        FROM invites;
+    `);
+
+                // 5. Drop the old table
+                await execute(db, `DROP TABLE invites;`);
+
+                // 6. Rename the temporary table to the original table name
+                await execute(db, `ALTER TABLE invites_new RENAME TO invites;`);
+
+                // 7. Commit the transaction
+                await execute(db, `COMMIT;`);
+            } catch (error) {
+                // Rollback changes if an error occurred
+                await execute(db, `ROLLBACK;`);
+                throw error;
+            } finally {
+                // 8. Re-enable foreign key constraints
+                await execute(db, `PRAGMA foreign_keys=ON;`);
+            }
             await execute(db, `CREATE TABLE IF NOT EXISTS suggestions (
         suggestionId TEXT PRIMARY KEY,
         suggestionMessageId TEXT NOT NULL,
@@ -127,6 +160,29 @@ const db = new sqlite3.Database(dbpath);
         voteType TEXT NOT NULL CHECK(voteType IN ('up', 'down')),
         PRIMARY KEY (suggestionId, userId),
         FOREIGN KEY (suggestionId) REFERENCES suggestions(suggestionId) ON DELETE CASCADE
+        )
+        `);
+            await execute(db, `CREATE TABLE IF NOT EXISTS entries (
+        userId TEXT NOT NULL,
+        messageId TEXT NOT NULL,
+        guildId TEXT NOT NULL,
+        PRIMARY KEY (messageId, userId)            
+        )
+        `);
+            await execute(db, `
+        CREATE INDEX IF NOT EXISTS idx_entries_userId ON entries (userId)
+        `);
+            await execute(db, `CREATE TABLE IF NOT EXISTS giveaways (
+        messageId TEXT PRIMARY KEY,
+        channelId TEXT NOT NULL,
+        serverId TEXT NOT NULL,
+        isDone INTEGER NOT NULL DEFAULT 0,
+        endsAt INTEGER NOT NULL,
+        invites INTEGER NOT NULL DEFAULT 0,
+        hostId TEXT NOT NULL,
+        winnerCount INTEGER NOT NULL DEFAULT 1,
+        prize TEXT NOT NULL,
+        participants INTEGER NOT NULL DEFAULT 0
         )
         `);
         }
