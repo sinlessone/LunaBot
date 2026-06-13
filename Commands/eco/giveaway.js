@@ -39,7 +39,7 @@ module.exports = {
             const prize = interaction.options.getString("prize")
             const duration = interaction.options.getString("duration")
             const winners = interaction.options.getInteger("winners") || 1
-            const invites = interaction.options.getInteger("invites")
+            const invites = interaction.options.getInteger("invites") || 0
 
             const timeLeft = parseTimeToMs(duration)
             if (!timeLeft) {/* user put in a bad time format, tell him*/
