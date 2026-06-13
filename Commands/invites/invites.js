@@ -2,6 +2,7 @@ const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require
 const { exists, execute, queryone, queryall, db} = require('../../utils/db')
 const config = require('../../config.json')
 const {presets} = require("../../data/embed");
+const {getInvitesCount} = require("../../utils/getinvitecount");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,17 +14,17 @@ module.exports = {
         ),
     cooldown: 5,
     async execute(interaction) {
-        const target = await interaction.options.getMember("user").id || interaction.user.id
+        const target = await interaction.options.getMember("user")?.id || interaction.user.id
         if (!target) {
             return await interaction.reply({
                 embeds: [presets.error("ERROR", "the specified user is not in the server")]
             })
         }
 
-        const data = await queryall(db, "SELECT * FROM invites WHERE inviterId=? AND serverId=? AND validInvite=1", [target, interaction.guild.id]) || ""
+        const invites = await getInvitesCount(interaction, target)
 
         await interaction.reply({
-            embeds: [presets.success("SUCCESS", `<@${target}> has ${data.length} invites`)]
+            embeds: [presets.success("SUCCESS", `<@${target}> has ${invites} invites`)]
         })
     }
 }

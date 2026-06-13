@@ -1,5 +1,5 @@
 const { Client, Events, GatewayIntentBits, Collection, ButtonStyle, MessageFlags, ActionRowBuilder, ButtonBuilder,
-    Partials
+    Partials, time, TimestampStyles
 } = require('discord.js');
 const fs = require('fs');
 const loadButtonHandler = require('./handlers/buttonhandler');
@@ -26,6 +26,7 @@ const {getQotd} = require("./utils/getqotd");
 const {getreactids} = require("./utils/setreactions");
 const {handlereactions} = require("./handlers/handlereactions");
 const {handlecountingsabotage} = require("./handlers/handlecountingsabotage");
+const {presets} = require("./data/embed");
 const cooldowns = new Map();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
@@ -152,8 +153,56 @@ client.on(Events.MessageDelete, async (message) => {
 
 init(client, "./config.json")
     .then(async () => {
-        console.log("initialized successfully")
+
         let lastQotd = "this is the first qotd, generate anything"
+        cron.schedule("*/15 * * * * *", async () => {
+            try {
+                const giveaways = await queryall(db, "SELECT * FROM giveaways WHERE isDone=0 AND endsAt < ?", [Date.now()]);
+
+                for (const i of giveaways) {
+                    try {
+                        const channel = client.channels.cache.get(i["channelId"]) || await client.channels.fetch(i["channelId"]);
+                        const message = await channel.messages.fetch(i["messageId"]);
+
+                        const winners = await queryall(db, "SELECT * FROM entries WHERE messageId=? AND guildId=? ORDER BY random() LIMIT ?", [message.id, channel.guild.id, i["winnerCount"]]);
+
+                        if (!winners || winners.length === 0) {
+                            await message.edit({
+                                embeds: [presets.warning("FINISHED", `giveaway for: ${i["prize"]}\nEnded at: ${time(Math.floor(i["endsAt"]/1000), TimestampStyles.RelativeTime)}\nNo one joined this giveaway`)],
+                                components: []
+                            });
+                            await message.reply({
+                                embeds: [presets.warning("GIVEAWAY ENDED", `No winners as no one joined the giveaway`)]
+                            });
+                        } else {
+                            const winnerMentions = winners.map(w => `<@${w.userId}>`).join("\n");
+                            await message.edit({
+                                embeds: [presets.info("FINISHED", `giveaway for: ${i["prize"]}\nEnded at: ${time(Math.floor(i["endsAt"]/1000), TimestampStyles.RelativeTime)}\nWinners: ${winnerMentions}`)],
+                                components: []
+                            });
+                            await message.reply({
+                                embeds: [presets.success("GIVEAWAY ENDED", `the winners are:\n ${winnerMentions}`)]
+                            });
+                        }
+
+                        await execute(db, "UPDATE giveaways SET isDone=1 WHERE messageId=? AND serverId=?", [message.id, channel.guild.id]);
+
+                    } catch (e) {
+                        console.error(`Error processing giveaway ${i["messageId"]}:`, e.message);
+
+                        const unrecoverableCodes = [50013, 50001, 10008, 10003];
+
+                        if (unrecoverableCodes.includes(e.code) || e.message.includes("fetch")) {
+                            console.log(`Force-completing dead giveaway ${i["messageId"]} in DB due to unrecoverable Discord error.`);
+                            await execute(db, "UPDATE giveaways SET isDone=1 WHERE messageId=? AND serverId=?", [i["messageId"], i["serverId"]]);
+                        }
+
+                    }
+                }
+            } catch (globalErr) {
+                console.error("Global Cron Error:", globalErr);
+            }
+        });
         cron.schedule("0 0 0 * * *", async () => {
 
             const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])

@@ -12,6 +12,13 @@ module.exports = {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
+
+        if (!interaction.guild.id || command.allowInDms) {
+            return interaction.reply({
+                embeds: [presets.error("ERROR", "This command can only be used in a server.")],
+                flags: MessageFlags.Ephemeral
+            })
+        }
         if (interaction.commandName === "setaichannel") {
             const channels = await getaichannels();
             setAiIds(channels.map(item => item.ai_channel_id));
@@ -19,10 +26,10 @@ module.exports = {
         if (interaction.user.id !== config?.ownerID && await handlecd(cooldowns, command, interaction)) return;
 
         if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
-            return await interaction.reply({
-                content: `Only the owner of the bot may use this command!`,
+            return interaction.reply({
+                embeds: [presets.error("ERROR", "Only the bot's owner can use this command")],
                 flags: MessageFlags.Ephemeral
-            });
+            })
         }
         if (command.modOnly) {
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)) return interaction.reply({
