@@ -1,11 +1,16 @@
 const { Pool, types } = require('pg');
 require('dotenv').config();
 
-// Force PostgreSQL BIGINT (type OID 20) to parse as a JavaScript Number
 types.setTypeParser(20, (val) => parseInt(val, 10));
 
+const dbUrl = new URL(process.env.DATABASE_URL);
+
 const pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
+        user: dbUrl.username ? decodeURIComponent(dbUrl.username) : undefined,
+        password: dbUrl.password ? decodeURIComponent(dbUrl.password) : undefined,
+        host: dbUrl.hostname,
+        port: dbUrl.port ? parseInt(dbUrl.port, 10) : 5432,
+        database: dbUrl.pathname ? dbUrl.pathname.slice(1) : 'postgres',
         ssl: {
                 rejectUnauthorized: false
         }
