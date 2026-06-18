@@ -42,9 +42,17 @@ module.exports = {
             const invites = interaction.options.getInteger("invites") || 0
 
             const timeLeft = parseTimeToMs(duration)
-            if (!timeLeft) {/* user put in a bad time format, tell him*/
+            if (!timeLeft) {
+                return interaction.reply({
+                    embeds: [presets.error("FAILURE", "You entered an incorrect time format")],
+                    flags: MessageFlags.Ephemeral
+                })
             }
-            if (timeLeft > 30 * 24 * 60 * 60 * 1000) {/* time's more than 30 days, inform the user*/
+            if (timeLeft > 30 * 24 * 60 * 60 * 1000) {
+                return interaction.reply({
+                    embeds: [presets.error("FAILURE", "The maximum giveaway timer is 30 days")],
+                    flags: MessageFlags.Ephemeral
+                })
             }
             const endTime = Date.now() + timeLeft
             const row = new ActionRowBuilder()
