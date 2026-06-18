@@ -10,14 +10,14 @@ module.exports = {
                 .setDescription('user to lookup')
         ),
     async execute(interaction){
-        const user = interaction.options.getUser('user')  ?? interaction.user
-        const member = interaction.options.getMember('user') ?? interaction.member
+        const user = interaction.options.getUser('user') ?? interaction.user
+        const member = interaction.options.getMember(user.id)
         const UserAvatar = user.avatarURL({ size: 128 }) ?? user.defaultAvatarURL
         const embed = new EmbedBuilder()
             .setColor(resolveColor("Blue"))
             .setFooter({
                 text: config.footer,
-                iconURL: config.footerUrl
+                iconURL: config.footerUrl = interaction.options.getMember('user')
             })
             .setTimestamp(new Date())
             .setThumbnail(UserAvatar)
