@@ -11,7 +11,7 @@ module.exports = {
         ),
     async execute(interaction){
         const user = interaction.options.getUser('user') ?? interaction.user
-        const member = interaction.options.getMember(user.id)
+        const member = interaction.guild.members.cache.get(user.id)
         const UserAvatar = user.avatarURL({ size: 128 }) ?? user.defaultAvatarURL
         const embed = new EmbedBuilder()
             .setColor(resolveColor("Blue"))
