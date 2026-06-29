@@ -7,22 +7,22 @@ module.exports = {
         name: "upvote"
     },
     async execute(interaction) {
-        const { upvotes, suggestionId } = await queryone(db, "SELECT * FROM suggestions WHERE serverId=? AND suggestionMessageId=?", [interaction.guild.id, interaction.message.id])
-        const votes = await queryone(db, "SELECT voteType FROM votes WHERE suggestionId=? AND userId=?", [suggestionId, interaction.user.id])
+        const { upvotes, suggestionid } = await queryone(db, "SELECT * FROM suggestions WHERE serverid=? AND suggestionmessageid=?", [interaction.guild.id, interaction.message.id])
+        const votes = await queryone(db, "SELECT votetype FROM votes WHERE suggestionid=? AND userid=?", [suggestionid, interaction.user.id])
         const row = interaction.message.components[0];
 
         if (!votes) {
-            await addVote(interaction, suggestionId, upvotes, row, "up")
+            await addVote(interaction, suggestionid, upvotes, row, "up")
         }  else {
-            await execute(db, "UPDATE suggestions SET upvotes=? WHERE suggestionMessageId=? AND serverId=?", [Number(upvotes) - 1, interaction.message.id, interaction.guild.id])
+            await execute(db, "UPDATE suggestions SET upvotes=? WHERE suggestionmessageid=? AND serverid=?", [Number(upvotes) - 1, interaction.message.id, interaction.guild.id])
             if (votes.voteType === "down") {
-                await execute(db, "DELETE FROM votes WHERE userId=? AND suggestionId=?", [interaction.user.id, suggestionId])
-                await execute(db, "UPDATE suggestions SET downvotes=downvotes-1 WHERE suggestionId=?", [suggestionId])
-                return await addVote(interaction, suggestionId, upvotes, row, "up")
+                await execute(db, "DELETE FROM votes WHERE userid=? AND suggestionid=?", [interaction.user.id, suggestionid])
+                await execute(db, "UPDATE suggestions SET downvotes=downvotes-1 WHERE suggestionid=?", [suggestionid])
+                return await addVote(interaction, suggestionid, upvotes, row, "up")
             }
-            await execute(db, "DELETE FROM votes WHERE userId=? AND suggestionId=?", [interaction.user.id, suggestionId])
+            await execute(db, "DELETE FROM votes WHERE userid=? AND suggestionid=?", [interaction.user.id, suggestionid])
 
-            const { upvotes: NewUpVotes, downvotes: newDownVotes } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionId=?", [suggestionId])
+            const { upvotes: NewUpVotes, downvotes: newDownVotes } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionid=?", [suggestionid])
 
 
             const newComponents = row.components.map((button, i) => {

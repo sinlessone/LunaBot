@@ -36,7 +36,7 @@ await message.channel.send({
     }
 )
     .then(async (data) => {
-        await execute(db, "INSERT INTO suggestions(serverId, suggestionMessageId, suggestion, suggestionId, suggesterId, upvotes, downvotes) VALUES (?, ?, ?, ?, ?, ?, ?)" ,[message.guild.id , data.id, message.content, id, message.member.id, 0, 0])
+        await execute(db, "INSERT INTO suggestions(serverid, suggestionMessageid, suggestion, suggestionid, suggesterid, upvotes, downvotes) VALUES (?, ?, ?, ?, ?, ?, ?)" ,[message.guild.id , data.id, message.content, id, message.member.id, 0, 0])
         await data.startThread({
             name: "suggestion discussion"
         })

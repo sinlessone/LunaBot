@@ -2,10 +2,17 @@ const {execute, db, queryone} = require("./db");
 const {ButtonBuilder, ActionRowBuilder} = require("discord.js");
 async function addVote(interaction, suggestionId, votes, row, type) {
     if (type === "up") {
+        console.log(suggestionId);
 
         await execute(db, "UPDATE suggestions SET upvotes=? WHERE suggestionId=?", [Number(votes) + 1, suggestionId])
-        await execute(db, "INSERT OR REPLACE INTO votes(suggestionId, userId, voteType) VALUES (?, ?, ?)", [suggestionId, interaction.user.id, "up"])
-
+        await execute(
+            db,
+            `INSERT INTO votes (suggestionid, userid, votetype) 
+     VALUES ($1, $2, $3) 
+     ON CONFLICT (suggestionId, userId) 
+     DO UPDATE SET votetype = EXCLUDED.votetype`,
+            [suggestionId, interaction.user.id, "up"]
+        );
         const { upvotes: NewUpVotes, downvotes: newDownVotes } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionId=?", [suggestionId])
 
 
