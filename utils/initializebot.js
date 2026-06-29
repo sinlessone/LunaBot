@@ -62,9 +62,11 @@ module.exports = {
         const serversData = await client.guilds.cache
         const serverIds = serversData.map(filter => filter.id)
         for (let id of serverIds) {
+
             let suggestionIds = getSuggestIds()
             const serverconfig = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [id])
-            if (serverconfig) suggestionIds.push(serverconfig.suggestionChannelId)
+            console.log(serverconfig)
+            if (serverconfig) suggestionIds.push(serverconfig.suggestionchannelid)
         }
     }
 }
