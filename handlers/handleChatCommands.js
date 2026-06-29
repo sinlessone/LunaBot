@@ -1,6 +1,7 @@
 const {PermissionsBitField} = require("discord.js");
 const {chatBan} = require("../chatcommands/ban");
 const {chatPurge} = require("../chatcommands/purge");
+const {chatSoftBan} = require("../chatcommands/softban");
 
 module.exports = {
     async handleChatCommands(message, client) {
@@ -14,6 +15,9 @@ module.exports = {
         }
         if (command[0].toLowerCase() === "?purge") {
             return await chatPurge(message, client)
+        }
+        if (command[0].toLowerCase() === "?softban") {
+            return await chatSoftBan(message, client)
         }
     }
 }
