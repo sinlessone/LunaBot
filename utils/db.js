@@ -69,7 +69,6 @@ async function getcountingchannels() {
 }
 
 async function initDb() {
-        // Standard table initializations using PostgreSQL schema rules
         await pool.query(`CREATE TABLE IF NOT EXISTS users (
         user_id TEXT PRIMARY KEY,
         balance BIGINT NOT NULL,
@@ -99,6 +98,7 @@ async function initDb() {
         current_number TEXT,
         current_number_message_id TEXT,
         last_counter TEXT,
+        altered_count INTEGER DEFAULT 0,
         qotd_channel TEXT,
         qotd_enabled INTEGER DEFAULT 0
     )`);
