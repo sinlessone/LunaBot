@@ -103,7 +103,7 @@ module.exports = {
                 })
                 await message.guild.bans.remove(toBan.id)
                 await message.reply({
-                    embeds: [presets.success("", `successfully banned user <@${toBan.id}>`)],
+                    embeds: [presets.success("", `successfully Softbanned user <@${toBan.id}>`)],
                 })
             } catch (e) {
                 await message.reply({
@@ -121,7 +121,7 @@ module.exports = {
                 await message.guild.bans.remove(toBanUser.id)
 
                 await message.reply({
-                    embeds: [presets.success("", `Banned user <@${toBanUser.id}> (${toBanUser.id})`)],
+                    embeds: [presets.success("", `Softbanned user <@${toBanUser.id}> (${toBanUser.id})`)],
                 })
             } catch (error) {
                 console.log(error, error.stack)
