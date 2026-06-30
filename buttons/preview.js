@@ -17,13 +17,12 @@ module.exports = {
             })
         }
         const channelId = interaction.message.channel.id
-        const { deniedChannelId, acceptedChannelId} = await queryone(db, "SELECT * FROM serverconfig WHERE suggestionChannelId=? AND server_id=?", [channelId, interaction.guild.id])
-        const { suggestion, suggesterId, upvotes, downvotes, suggestionId } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionMessageId=? AND serverId=?", [interaction.message.id, interaction.guild.id])
+        const { deniedchannelid, acceptedchannelid} = await queryone(db, "SELECT * FROM serverconfig WHERE suggestionChannelId=? AND server_id=?", [channelId, interaction.guild.id])
+        const { suggestion, suggesterid, upvotes, downvotes, suggestionid } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionMessageid=? AND serverid=?", [interaction.message.id, interaction.guild.id])
 
 
-        const suggester = await interaction.client.users.fetch(suggesterId).catch(() => null)
-
-        let suggesterAvatar = suggester.displayAvatarURL({ size: 128}) ?? suggester.defaultAvatarURL
+        const suggester = await interaction.client.users.fetch(suggesterid).catch(() => null)
+        let suggesterAvatar = suggester?.displayAvatarURL({ size: 128}) ?? suggester.defaultAvatarURL ?? interaction.client.user.displayAvatarURL
 
         const row = new ActionRowBuilder()
             .addComponents(
@@ -47,12 +46,12 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             )
 
-        const acceptChannel = interaction.guild.channels.cache.get(acceptedChannelId)
-        const denyChannel = interaction.guild.channels.cache.get(deniedChannelId)
+        const acceptChannel = interaction.guild.channels.cache.get(acceptedchannelid)
+        const denyChannel = interaction.guild.channels.cache.get(deniedchannelid)
 
 
         const modal = new ModalBuilder({
-            customId: `judgesuggestion-${suggestionId}`,
+            customId: `judgesuggestion-${suggestionid}`,
             title: "Judge Suggestion"
         });
 
@@ -81,13 +80,13 @@ module.exports = {
         await interaction.showModal(modal)
 
 
-        const filter = (i) => i.customId === `judgesuggestion-${suggestionId}`
+        const filter = (i) => i.customId === `judgesuggestion-${suggestionid}`
 
 
         try {
             const modalInteraction = await interaction.awaitModalSubmit({
                 filter: i =>
-                    i.customId === `judgesuggestion-${suggestionId}` &&
+                    i.customId === `judgesuggestion-${suggestionid}` &&
                     i.user.id === interaction.user.id,
                 time: 240_000,
             });
@@ -102,14 +101,14 @@ module.exports = {
             if (["d", "deny", "den", "de"].includes(result.trim().toLowerCase())) {
                 await execute(
                     db,
-                    "UPDATE suggestions SET denied=? WHERE suggestionMessageId=? AND serverId=?",
+                    "UPDATE suggestions SET denied=? WHERE suggestionMessageid=? AND serverid=?",
                     [1, interaction.message.id, interaction.guild.id]
                 );
                 await denyChannel.send({
                     embeds: [
                         presets
                             .error("", suggestion)
-                            .setFooter({ text: `(ID: ${suggestionId})` })
+                            .setFooter({ text: `(ID: ${suggestionid})` })
                             .setAuthor({
                                 name: `Suggestion | ${suggester.username}`,
                                 iconURL: suggesterAvatar
@@ -127,14 +126,14 @@ module.exports = {
             ) {
                 await execute(
                     db,
-                    "UPDATE suggestions SET accepted=? WHERE suggestionMessageId=? AND serverId=?",
+                    "UPDATE suggestions SET accepted=? WHERE suggestionMessageid=? AND serverid=?",
                     [1, interaction.message.id, interaction.guild.id]
                 );
                 await acceptChannel.send({
                     embeds: [
                         presets
                             .success("", suggestion)
-                            .setFooter({ text: `(ID: ${suggestionId})` })
+                            .setFooter({ text: `(ID: ${suggestionid})` })
                             .setAuthor({
                                 name: `Suggestion | ${suggester.username}`,
                                 iconURL: suggesterAvatar
