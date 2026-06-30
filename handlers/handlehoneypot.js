@@ -3,7 +3,7 @@ const {queryone, db} = require("../utils/db");
 
 module.exports = async function (message, client) {
     if (message.author.bot) return;
-    if (message.member.permissions.has("ADMINISTRATOR")) return
+    if (message.member.permissions.has("ADMINISTRATOR") || message.guild.ownerId) return
     try {
         await message.member.ban({
             reason: "compromised account"
