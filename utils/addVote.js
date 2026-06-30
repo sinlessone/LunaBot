@@ -33,7 +33,11 @@ async function addVote(interaction, suggestionId, votes, row, type) {
     }
     if (type === "down") {
         await execute(db, "UPDATE suggestions SET downvotes=? WHERE suggestionId=?", [Number(votes) + 1, suggestionId])
-        await execute(db, "INSERT OR REPLACE INTO votes(suggestionId, userId, voteType) VALUES (?, ?, ?)", [suggestionId, interaction.user.id, "down"])
+        console.log(suggestionId, interaction.user.id, "down")
+        await execute(db, `INSERT INTO votes (suggestionid, userid, votetype)
+                           VALUES ($1, $2, $3)
+                           ON CONFLICT (suggestionId, userId)
+                               DO UPDATE SET votetype = EXCLUDED.votetype`, [suggestionId, interaction.user.id, "down"])
 
         const { upvotes: NewUpVotes, downvotes: newDownVotes } = await queryone(db, "SELECT * FROM suggestions WHERE suggestionId=?", [suggestionId])
 

@@ -15,7 +15,7 @@ module.exports = {
             await addVote(interaction, suggestionid, upvotes, row, "up")
         }  else {
             await execute(db, "UPDATE suggestions SET upvotes=? WHERE suggestionmessageid=? AND serverid=?", [Number(upvotes) - 1, interaction.message.id, interaction.guild.id])
-            if (votes.voteType === "down") {
+            if (votes.votetype === "down") {
                 await execute(db, "DELETE FROM votes WHERE userid=? AND suggestionid=?", [interaction.user.id, suggestionid])
                 await execute(db, "UPDATE suggestions SET downvotes=downvotes-1 WHERE suggestionid=?", [suggestionid])
                 return await addVote(interaction, suggestionid, upvotes, row, "up")
