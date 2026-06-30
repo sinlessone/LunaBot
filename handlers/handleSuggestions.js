@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const {presets} = require("../data/embed");
 async function handleSuggestions(message) {
     const suggestion = message.content
+    if (message.content.startsWith("-r ")) return
     const id = uuidv4()
     const row = new ActionRowBuilder()
     .addComponents(
