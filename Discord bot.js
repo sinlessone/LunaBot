@@ -27,6 +27,8 @@ const {getreactids} = require("./utils/setreactions");
 const {handlereactions} = require("./handlers/handlereactions");
 const {handlecountingsabotage} = require("./handlers/handlecountingsabotage");
 const {presets} = require("./data/embed");
+const handlehoneypot = require("./handlers/handlehoneypot");
+const {getHoneypotids} = require("./utils/sethoneypot");
 const cooldowns = new Map();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
@@ -58,15 +60,18 @@ deploy()
 client.on("messageCreate", async (message) => {
     if (message.author.bot === true) return
     if (getSuggestIds().includes(message.channel.id)) {
-        return await handleSuggestions(message)
+        await handleSuggestions(message)
     }
 
     if (getAiIds().includes(message.channel.id)) {
-        return await handleaichat(message, client);
+        await handleaichat(message, client);
     }
 
     if (getCountIds().includes(message.channel.id)) {
-        return await handlecounting(message)
+        await handlecounting(message)
+    }
+    if (getHoneypotids().includes(message.channel.id)) {
+        await handlehoneypot(message, client)
     }
 })
 

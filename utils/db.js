@@ -59,6 +59,10 @@ async function getaichannels() {
 async function getreactionids() {
         return await queryall(null, "SELECT messageId FROM reactionroles");
 }
+async function gethoneypotchannels() {
+        return await queryall(null, "SELECT honeypot FROM serverconfig");
+}
+
 
 async function getsuggestchannels() {
         return await queryall(null, "SELECT * FROM serverconfig");
@@ -89,7 +93,7 @@ async function initDb() {
 
         await pool.query(`CREATE TABLE IF NOT EXISTS serverconfig (
         server_id TEXT PRIMARY KEY,
-        suggestionChannelId TEXT,
+        suggestionchannelid TEXT,
         deniedChannelId TEXT,
         acceptedChannelId TEXT,
         autothread TEXT,
@@ -100,7 +104,12 @@ async function initDb() {
         last_counter TEXT,
         altered_count INTEGER DEFAULT 0,
         qotd_channel TEXT,
-        qotd_enabled INTEGER DEFAULT 0
+        qotd_enabled INTEGER DEFAULT 0,
+        honeypot TEXT,
+        softbanorban INTEGER DEFAULT 0,
+        honeypotmessage TEXT
+        
+                                
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS qotd (
@@ -109,59 +118,59 @@ async function initDb() {
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS invites (
-        serverId TEXT NOT NULL,
-        inviterId TEXT NOT NULL,
-        invitedId TEXT NOT NULL,
-        inviteCode TEXT NOT NULL,
-        validInvite INTEGER NOT NULL DEFAULT 1,
-        PRIMARY KEY (invitedId, serverId)
+        serverid TEXT NOT NULL,
+        inviterid TEXT NOT NULL,
+        invitedid TEXT NOT NULL,
+        invitecode TEXT NOT NULL,
+        validinvite INTEGER NOT NULL DEFAULT 1,
+        PRIMARY KEY (invitedid, serverid)
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS suggestions (
-        suggestionId TEXT PRIMARY KEY,
-        suggestionMessageId TEXT NOT NULL,
+        suggestionid TEXT PRIMARY KEY,
+        suggestionMessageid TEXT NOT NULL,
         suggestion TEXT NOT NULL,
-        serverId TEXT NOT NULL,
-        suggesterId TEXT NOT NULL,
-        upvotes TEXT NOT NULL,
-        downvotes TEXT NOT NULL,
+        serverid TEXT NOT NULL,
+        suggesterid TEXT NOT NULL DEFAULT 0,
+        upvotes INTEGER NOT NULL DEFAULT 0,
+        downvotes INTEGER NOT NULL,
         accepted INTEGER DEFAULT 0,
         denied INTEGER DEFAULT 0
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS reactionroles (
-        guildId TEXT,
-        messageId TEXT,
+        guildid TEXT,
+        messageid TEXT,
         emoji TEXT,
-        roleId TEXT
+        roleid TEXT
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS votes (
-        suggestionId TEXT NOT NULL,
-        userId TEXT NOT NULL,
-        voteType TEXT NOT NULL CHECK(voteType IN ('up', 'down')),
-        PRIMARY KEY (suggestionId, userId),
-        FOREIGN KEY (suggestionId) REFERENCES suggestions(suggestionId) ON DELETE CASCADE
+        suggestionid TEXT NOT NULL,
+        userid TEXT NOT NULL,
+        votetype TEXT NOT NULL CHECK(votetype IN ('up', 'down')),
+        PRIMARY KEY (suggestionid, userid),
+        FOREIGN KEY (suggestionid) REFERENCES suggestions(suggestionid) ON DELETE CASCADE
     )`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS entries (
-        userId TEXT NOT NULL,
-        messageId TEXT NOT NULL,
-        guildId TEXT NOT NULL,
-        PRIMARY KEY (messageId, userId)            
+        userid TEXT NOT NULL,
+        messageid TEXT NOT NULL,
+        guildid TEXT NOT NULL,
+        PRIMARY KEY (messageid, userid)            
     )`);
 
         await pool.query(`CREATE INDEX IF NOT EXISTS idx_entries_userId ON entries (userId)`);
 
         await pool.query(`CREATE TABLE IF NOT EXISTS giveaways (
-        messageId TEXT PRIMARY KEY,
-        channelId TEXT NOT NULL,
-        serverId TEXT NOT NULL,
-        isDone INTEGER NOT NULL DEFAULT 0,
-        endsAt BIGINT NOT NULL,
+        messageid TEXT PRIMARY KEY,
+        channelid TEXT NOT NULL,
+        serverid TEXT NOT NULL,
+        isdone INTEGER NOT NULL DEFAULT 0,
+        endsat BIGINT NOT NULL,
         invites INTEGER NOT NULL DEFAULT 0,
-        hostId TEXT NOT NULL,
-        winnerCount INTEGER NOT NULL DEFAULT 1,
+        hostid TEXT NOT NULL,
+        winnercount INTEGER NOT NULL DEFAULT 1,
         prize TEXT NOT NULL,
         participants INTEGER NOT NULL DEFAULT 0
     )`);
@@ -179,5 +188,6 @@ module.exports = {
         getsuggestchannels,
         getcountingchannels,
         getreactionids,
+        gethoneypotchannels,
         db: pool // Exports the Supabase pool
 };
