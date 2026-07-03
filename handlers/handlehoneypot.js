@@ -6,7 +6,6 @@ module.exports = async function (message, client) {
     if (message.author.bot) return;
     if (message.member.permissions.has(PermissionsBitField.Flags.Administrator) || message.guild.ownerId === message.author.id) return
     try {
-        console.log("im here")
         await message.member.ban({
             reason: "compromised account",
             deleteMessageSeconds: 7 * 24 * 60 * 60
