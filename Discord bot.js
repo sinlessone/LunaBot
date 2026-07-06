@@ -180,7 +180,7 @@ init(client, "./config.json")
                                 embeds: [presets.warning("GIVEAWAY ENDED", `No winners as no one joined the giveaway`)]
                             });
                         } else {
-                            const winnerMentions = winners.map(w => `<@${w.userId}>`).join("\n");
+                            const winnerMentions = winners.map(w => `<@${w.userid}>`).join("\n");
                             await message.edit({
                                 embeds: [presets.info("FINISHED", `giveaway for: ${i["prize"]}\nEnded at: ${time(Math.floor(i["endsAt"]/1000), TimestampStyles.RelativeTime)}\nWinners: ${winnerMentions}`)],
                                 components: []
@@ -198,8 +198,8 @@ init(client, "./config.json")
                         const unrecoverableCodes = [50013, 50001, 10008, 10003];
 
                         if (unrecoverableCodes.includes(e.code) || e.message.includes("fetch")) {
-                            console.log(`Force-completing dead giveaway ${i["messageId"]} in DB due to unrecoverable Discord error.`);
-                            await execute(db, "UPDATE giveaways SET isDone=1 WHERE messageId=? AND serverId=?", [i["messageId"], i["serverId"]]);
+                            console.log(`Force-completing dead giveaway ${i["messageid"]} in DB due to unrecoverable Discord error.`);
+                            await execute(db, "UPDATE giveaways SET isDone=1 WHERE messageId=? AND serverId=?", [i["messageid"], i["serverid"]]);
                         }
 
                     }
