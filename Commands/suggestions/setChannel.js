@@ -41,7 +41,7 @@ module.exports = {
             await execute(db, "INSERT INTO serverconfig(server_id, suggestionChannelId, deniedChannelId, acceptedChannelId, autothread) VALUES (?, ?, ?, ?, ?)", [interaction.guild.id, suggestionChannel.id, deniedChannel.id, acceptedChannel.id, +autoThread])
         }
         const newSuggestData = await queryall(db, "SELECT * FROM serverconfig")
-        const newSuggestIds = newSuggestData.map(filter => filter.suggestionChannelId)
+        const newSuggestIds = newSuggestData.map(filter => filter.suggestionchannelid)
         setSuggestIds(newSuggestIds)
 
         interaction.reply("successfully setup suggestions for this server")
