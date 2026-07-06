@@ -166,10 +166,10 @@ init(client, "./config.json")
 
                 for (const i of giveaways) {
                     try {
-                        const channel = client.channels.cache.get(i["channelId"]) || await client.channels.fetch(i["channelId"]);
-                        const message = await channel.messages.fetch(i["messageId"]);
+                        const channel = client.channels.cache.get(i["channelid"]) || await client.channels.fetch(i["channelid"]);
+                        const message = await channel.messages.fetch(i["messageid"]);
 
-                        const winners = await queryall(db, "SELECT * FROM entries WHERE messageId=? AND guildId=? ORDER BY random() LIMIT ?", [message.id, channel.guild.id, i["winnerCount"]]);
+                        const winners = await queryall(db, "SELECT * FROM entries WHERE messageId=? AND guildId=? ORDER BY random() LIMIT ?", [message.id, channel.guild.id, i["winnercount"]]);
 
                         if (!winners || winners.length === 0) {
                             await message.edit({
