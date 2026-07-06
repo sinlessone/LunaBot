@@ -1,9 +1,6 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
-const { exists, execute, queryone, queryall, db} = require('../../utils/db')
-const config = require('../../config.json')
-const {presets} = require("../../data/embed");
-const {getSuggestIds, setSuggestIds} = require("../../utils/setsuggestids");
-const {setAiIds} = require("../../utils/setaiids");
+const {  SlashCommandBuilder} = require('discord.js')
+const { execute, queryone, queryall, db} = require('../../utils/db')
+const {setSuggestIds} = require("../../utils/setsuggestids");
 
 module.exports = {
     data: new SlashCommandBuilder()
