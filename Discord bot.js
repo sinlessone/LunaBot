@@ -2,13 +2,14 @@ const { Client, Events, GatewayIntentBits, Collection, MessageFlags,
     Partials, time, TimestampStyles
 } = require('discord.js');
 const fs = require('fs');
+const SmeeClient = require('smee-client')
 const loadButtonHandler = require('./handlers/buttonhandler');
 const path = require('path');
 require('dotenv').config({ path: ".env" });
 const chalk = require("chalk");
 const { ChangeStatus } = require('./utils/ChangeStatus')
 const cron = require('node-cron');
-const {init} = require("./utils/initializebot");
+const {init, events} = require("./utils/initializebot");
 const {handleaichat} = require("./handlers/handleaichat");
 const {loadcommands} = require("./utils/loadcommands");
 const {handlecommands} = require("./handlers/handlecommands");
@@ -52,6 +53,7 @@ client.blackjackGames = new Map();
 loadButtonHandler(client)
 let config = JSON.parse(fs.readFileSync(fpath).toString())
 loadcommands(client, CommandsFolder, folderpath)
+
 
 deploy()
 
@@ -113,6 +115,7 @@ client.on(Events.ClientReady, async () => {
 })
 
 client.on(Events.MessageCreate, async (message) => {
+    console.log(events)
     await handleChatCommands(message, client)
 })
 
