@@ -25,6 +25,7 @@
       <w>setcountingnumber</w>
       <w>setreactids</w>
       <w>setupcounting</w>
+      <w>softban</w>
     </words>
   </dictionary>
 </component>
