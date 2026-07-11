@@ -15,7 +15,7 @@ const {listen} = require("../smee/server");
 module.exports = {
     async init(client, configpath) {
         const smee = new SmeeClient({
-            source: 'https://smee.io/qD8GPa4zgpkf4VBs',
+            source: process.env.SMEE_URL,
             target: 'http://localhost:3000/github',
             logger: console
         })
