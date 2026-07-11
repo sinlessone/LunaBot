@@ -1,4 +1,5 @@
 const express = require('express')
+const {handleCommit} = require("../handlers/handleCommit");
 
 const app = express();
 const PORT = 3000;
@@ -7,10 +8,8 @@ async function listen() {
     app.use(express.json());
 
 // This matches the path Smee forwards to
-    app.post('/github', (req, res) => {
-        console.log('🚀 Received a webhook message:');
-        console.log(JSON.stringify(req.body, null, 2));
-
+    app.post('/github', async (req, res) => {
+        await handleCommit(4, req.body);
         // Always send a 200 OK back to acknowledge receipt
         res.status(200).send('Success');
     });
