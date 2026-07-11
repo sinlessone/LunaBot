@@ -17,10 +17,9 @@ module.exports = {
         const smee = new SmeeClient({
             source: process.env.SMEE_URL,
             target: 'http://localhost:3000/github',
-            logger: console
         })
 
-        const events = await smee.start()
+        await smee.start()
         await listen(client)
         await initDb();
         const aichannels = await getaichannels()

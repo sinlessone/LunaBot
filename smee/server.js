@@ -14,7 +14,6 @@ async function listen(client) {
     });
 
     app.listen(PORT, () => {
-        console.log(`🤖 LunaBott is listening on http://localhost:${PORT}`);
     });
 
 }

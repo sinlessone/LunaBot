@@ -9,7 +9,6 @@ module.exports = {
                 commitAuthors.add(commit.author.name)
             }
             const {commitchannelid: channelId} = await queryone(db, "SELECT * FROM ownerconfig")
-            console.log(channelId)
             const channel = await client.channels.fetch(channelId)
             for (const commit of body.commits) {
                 const commitURL = commit.url
