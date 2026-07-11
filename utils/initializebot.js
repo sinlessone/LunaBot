@@ -13,7 +13,7 @@ const {setHoneypotids, getHoneypotids} = require("./sethoneypot");
 const SmeeClient = require("smee-client");
 const {listen} = require("../smee/server");
 module.exports = {
-    async init( client, configpath) {
+    async init(client, configpath) {
         const smee = new SmeeClient({
             source: 'https://smee.io/qD8GPa4zgpkf4VBs',
             target: 'http://localhost:3000/github',
@@ -21,8 +21,7 @@ module.exports = {
         })
 
         const events = await smee.start()
-        module.exports = {events};
-        await listen()
+        await listen(client)
         await initDb();
         const aichannels = await getaichannels()
         const countchannels = await getcountingchannels()

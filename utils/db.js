@@ -81,6 +81,10 @@ async function initDb() {
         lastmugged BIGINT
     )`);
 
+        await pool.query(`CREATE TABLE IF NOT EXISTS ownerConfig (
+        commitChannelId TEXT PRIMARY KEY
+        )`);
+
         await pool.query(`CREATE TABLE IF NOT EXISTS accounts (
         acc_id TEXT PRIMARY KEY,
         acc_name TEXT NOT NULL,
