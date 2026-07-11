@@ -14,12 +14,16 @@ const SmeeClient = require("smee-client");
 const {listen} = require("../smee/server");
 module.exports = {
     async init(client, configpath) {
-        const smee = new SmeeClient({
-            source: process.env.SMEE_URL,
-            target: 'http://localhost:3000/github',
-        })
+        if (process.env.SMEE_URL) {
+            const smee = new SmeeClient({
+                source: process.env.SMEE_URL,
+                target: 'http://localhost:3000/github',
+            })
+            await smee.start()
+        } else {
+            console.error("SMEE_URL is not defined, please set it up in .env");
+        }
 
-        await smee.start()
         await listen(client)
         await initDb();
         const aichannels = await getaichannels()
