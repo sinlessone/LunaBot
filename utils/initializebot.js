@@ -12,6 +12,7 @@ const {setreactids} = require("./setreactions");
 const {setHoneypotids, getHoneypotids} = require("./sethoneypot");
 const SmeeClient = require("smee-client");
 const {listen} = require("../smee/server");
+const loadChannels = require("./loadChannels");
 module.exports = {
     async init(client, configpath) {
         if (process.env.SMEE_URL) {
@@ -26,14 +27,7 @@ module.exports = {
 
         await listen(client)
         await initDb();
-        const aichannels = await getaichannels()
-        const countchannels = await getcountingchannels()
-        const reactionids = await getreactionids()
-        const honeypotchannels = await gethoneypotchannels()
-        setAiIds(aichannels.map(item => item.ai_channel_id))
-        setCountIds(countchannels.map(item => item.counting_channel_id))
-        setreactids(reactionids.map(item => item.messageId))
-        setHoneypotids(honeypotchannels.map(item => item.honeypot))
+        await loadChannels()
         await fixConfig();
         const config = JSON.parse(fs.readFileSync(path.resolve(configpath)));
         if (!config.ownerID) {

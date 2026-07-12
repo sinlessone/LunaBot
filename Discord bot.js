@@ -9,7 +9,7 @@ require('dotenv').config({ path: ".env" });
 const chalk = require("chalk");
 const { ChangeStatus } = require('./utils/ChangeStatus')
 const cron = require('node-cron');
-const {init, events} = require("./utils/initializebot");
+const {init} = require("./utils/initializebot");
 const {handleaichat} = require("./handlers/handleaichat");
 const {loadcommands} = require("./utils/loadcommands");
 const {handlecommands} = require("./handlers/handlecommands");
@@ -115,7 +115,6 @@ client.on(Events.ClientReady, async () => {
 })
 
 client.on(Events.MessageCreate, async (message) => {
-    console.log(events)
     await handleChatCommands(message, client)
 })
 
