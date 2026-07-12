@@ -9,7 +9,7 @@ async function listen(client) {
 
 // This matches the path Smee forwards to
     app.post('/github', async (req, res) => {
-        await handleCommit(client, req.body);
+        await handleCommit(client, req);
         res.status(200).send('Success');
     });
 
