@@ -28,4 +28,6 @@ async function startSmee() {
     });
 }
 
-module.exports = startSmee;
+
+
+module.exports = {startSmee};

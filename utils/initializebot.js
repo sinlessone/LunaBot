@@ -1,22 +1,17 @@
-const {getaichannels, initDb, getsuggestchannels, queryone, db, getcountingchannels, execute, getreactionids,
-    gethoneypotchannels
+const {initDb, queryone, db,
 } = require("./db");
 const {fixConfig} = require("./fixconfig");
 const fs = require("fs");
 const path = require("path")
 const chalk = require("chalk");
-const {setAiIds} = require("./setaiids");
 const {getSuggestIds,} = require("./setsuggestids");
-const {setCountIds} = require("./setcountingids");
-const {setreactids} = require("./setreactions");
-const {setHoneypotids, getHoneypotids} = require("./sethoneypot");
-const SmeeClient = require("smee-client");
 const {listen} = require("../smee/server");
 const loadChannels = require("./loadChannels");
-const startSmee = require("./startSmee");
+const { startSmee } = require("./startSmee");
 module.exports = {
     async init(client, configpath) {
-        startSmee()
+        await startSmee()
+
         await listen(client)
         await initDb();
         await loadChannels()

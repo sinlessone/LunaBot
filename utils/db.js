@@ -111,7 +111,9 @@ async function initDb() {
         qotd_enabled INTEGER DEFAULT 0,
         honeypot TEXT,
         softbanorban INTEGER DEFAULT 0,
-        honeypotmessage TEXT
+        honeypotmessage TEXT,
+        joinroleid TEXT,
+        joinchannelid TEXT
         
                                 
     )`);

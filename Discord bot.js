@@ -29,6 +29,7 @@ const {handlecountingsabotage} = require("./handlers/handlecountingsabotage");
 const {presets} = require("./data/embed");
 const handlehoneypot = require("./handlers/handlehoneypot");
 const {getHoneypotids} = require("./utils/sethoneypot");
+const {handleJoin} = require("./handlers/handleJoin");
 const cooldowns = new Map();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
@@ -74,6 +75,10 @@ client.on("messageCreate", async (message) => {
     if (getHoneypotids().includes(message.channel.id)) {
         await handlehoneypot(message, client)
     }
+})
+
+client.on(Events.GuildMemberAdd, async (guildMember) => {
+    await handleJoin(client, guildMember);
 })
 
 client.on(Events.InteractionCreate, async interaction => {
