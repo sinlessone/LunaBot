@@ -1,4 +1,3 @@
-const {GoogleGenAI, ApiError} = require("@google/genai")
 const { Mistral } = require("@mistralai/mistralai");
 const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 const config = require("../config.json")
