@@ -214,7 +214,7 @@ init(client, "./config.json")
                 console.error("Global Cron Error:", globalErr);
             }
         });
-        cron.schedule("0 0 0 * * *", async () => {
+        cron.schedule("0 0 11 * * *", async () => {
 
             const data = await queryall(db, "SELECT qotd_channel FROM serverconfig WHERE qotd_enabled=?", [1])
 
