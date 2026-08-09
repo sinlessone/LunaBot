@@ -10,7 +10,6 @@ module.exports = {
                 embeds: [presets.warning("", "You do not have permissions to use this command")]
             })
         }
-        console.log("I passed")
 
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
             return message.reply({
