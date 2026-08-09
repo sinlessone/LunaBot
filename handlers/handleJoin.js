@@ -3,7 +3,6 @@ const {presets} = require("../data/embed");
 exports.handleJoin = async (client, member) => {
     try {
         const {joinchannelid, joinroleid, joindata} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=$1", [member.guild.id]);
-        console.log(joindata)
 
 
         if (joinroleid) {
