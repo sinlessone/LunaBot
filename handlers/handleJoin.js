@@ -2,7 +2,9 @@ const {queryone, db} = require("../utils/db");
 const {presets} = require("../data/embed");
 exports.handleJoin = async (client, member) => {
     try {
-        const {joinchannelid, joinroleid} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=$1", [member.guild.id]);
+        const {joinchannelid, joinroleid, joindata} = await queryone(db, "SELECT * FROM serverconfig WHERE server_id=$1", [member.guild.id]);
+        console.log(joindata)
+
 
         if (joinroleid) {
             await member.roles.add(joinroleid)
@@ -10,8 +12,8 @@ exports.handleJoin = async (client, member) => {
         if (joinchannelid) {
             const channel = await client.channels.fetch(joinchannelid);
             await channel.send({
-                embeds: [presets.success("", `hope you have a great stay here <@${member.user.id}>!\n We now have ${member.guild.memberCount} members!`).setAuthor({
-                    name: "Welcome to the server!",
+                embeds: [presets.success("", joindata.description.replaceAll("$user", `<@${member.id}>`).replaceAll("$server", member.guild.name).replaceAll("$br", "\n")).setAuthor({
+                    name: joindata.title,
                     iconURL: member.user.displayAvatarURL(),
                 })],
             })

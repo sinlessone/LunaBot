@@ -113,7 +113,8 @@ async function initDb() {
         softbanorban INTEGER DEFAULT 0,
         honeypotmessage TEXT,
         joinroleid TEXT,
-        joinchannelid TEXT
+        joinchannelid TEXT,
+        joindata JSONB
         
                                 
     )`);

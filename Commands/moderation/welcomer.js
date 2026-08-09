@@ -10,19 +10,40 @@ module.exports = {
             .setName('channel')
             .setDescription("The channel to send welcome messages to")
             .setRequired(true)
-        ),
+        )
+        .addStringOption(option => option
+            .setName('title')
+            .setDescription("Embed title for welcome messages")
+            .setMaxLength(80)
+            .setRequired(true)
+        )
+        .addStringOption(option => option
+            .setName('description')
+            .setDescription("the body text for welcome messages, '$user' => username, '$server' => server name, '$br' => newline")
+            .setMaxLength(600)
+            .setRequired(true)
+        )
+    ,
+
     adminOnly: true,
     cooldown: 5,
 
     async execute(interaction) {
         const channel = interaction.options.getChannel('channel')
+        const title = interaction.options.getString("title")
+        const description = interaction.options.getString("description")
+        const data = {
+            title: title,
+            description: description,
+        }
+
         if (channel.type !== 0) {
             return  await interaction.reply({
                 embeds: [presets.error("Invalid channel", "Please provide a text channel")],
             })
         }
             try {
-            await execute(db, "UPDATE serverconfig SET joinchannelid=$1 WHERE server_id=$2", [channel.id, interaction.guild.id]);
+            await execute(db, "UPDATE serverconfig SET joinchannelid=$1, joindata=$2 WHERE server_id=$3", [channel.id, JSON.stringify(data), interaction.guild.id]);
             await interaction.reply({
                 embeds: [presets.success("Success", `Welcome messages will be sent to <#${channel.id}>`)],
             })
