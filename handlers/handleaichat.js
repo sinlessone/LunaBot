@@ -109,7 +109,9 @@ module.exports = {
             }
         } catch(error) {
             console.error("[CRITICAL]", error);
-            await message.reply("my brain is lagging 😭");
+            try {
+                await message.reply("my brain is lagging 😭");
+            } catch (error) {}
         }
     }
 }
