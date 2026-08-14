@@ -15,7 +15,7 @@ module.exports = {
                 return;
             }
 
-            const role = messageReaction.message.guild.roles.cache.get(reactions["roleId"]);
+            const role = messageReaction.message.guild.roles.cache.get(reactions["roleid"]);
             if (!role) return;
 
             // Check role hierarchy
