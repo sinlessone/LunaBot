@@ -12,7 +12,7 @@ const {setHoneypotids} = require("./sethoneypot") ;
         const honeypotchannels = await gethoneypotchannels()
         setAiIds(aichannels.map(item => item.ai_channel_id))
         setCountIds(countchannels.map(item => item.counting_channel_id))
-        setreactids(reactionids.map(item => item.messageId))
+        setreactids(reactionids.map(item => item.messageid))
         setHoneypotids(honeypotchannels.map(item => item.honeypot))
     }
 
