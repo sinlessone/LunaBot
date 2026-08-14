@@ -70,7 +70,8 @@ module.exports = {
                 }
 
                 const messageId = interaction.options.getString('messageid');
-                const emoji = interaction.options.getString('emoji');
+                const emoji = interaction.options.getString('emoji').trim()
+
 
                 const duplicateemoji = await queryone(db, "SELECT * FROM reactionroles WHERE guildid = ? AND messageid = ? AND emoji = ?", [interaction.guild.id, messageId, emoji]);
                 if (duplicateemoji) {
