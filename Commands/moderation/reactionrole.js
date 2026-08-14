@@ -72,7 +72,7 @@ module.exports = {
                 const messageId = interaction.options.getString('messageid');
                 const emoji = interaction.options.getString('emoji');
 
-                const duplicateemoji = await queryone(db, "SELECT * FROM reactionroles WHERE guildId = ? AND messageId = ? AND emoji = ?", [interaction.guild.id, messageId, emoji]);
+                const duplicateemoji = await queryone(db, "SELECT * FROM reactionroles WHERE guildid = ? AND messageid = ? AND emoji = ?", [interaction.guild.id, messageId, emoji]);
                 if (duplicateemoji) {
                     return interaction.reply({
                         embeds: [presets.warning("ERROR", "This emoji is already used for a reaction role on this message.")],
@@ -80,7 +80,7 @@ module.exports = {
                     });
                 }
 
-                const duplicaterole = await queryone(db, "SELECT * FROM reactionroles WHERE guildId = ? AND messageId = ? AND roleId = ?", [interaction.guild.id, messageId, role.id]);
+                const duplicaterole = await queryone(db, "SELECT * FROM reactionroles WHERE guildid = ? AND messageid = ? AND roleid = ?", [interaction.guild.id, messageId, role.id]);
                 if (duplicaterole) {
                     return interaction.reply({
                         embeds: [presets.warning("ERROR", "This role is already used for a reaction role on this message.")],
@@ -94,7 +94,7 @@ module.exports = {
                 const ids = await queryall(db, "SELECT messageId FROM reactionroles");
 
                 await message.react(emoji);
-                setreactids(ids.map(item => item.messageId));
+                setreactids(ids.map(item => item.messageid));
 
                 return interaction.reply({
                     embeds: [presets.success("SUCCESS", "Reaction role set up successfully!")],
